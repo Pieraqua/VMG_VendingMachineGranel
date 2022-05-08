@@ -31,10 +31,10 @@ typedef struct
 }STRUCT_APP;
 
 /* Funcao de polling da StateMachine */
-void vAPP_Poll();
+void vAPP_Poll(void);
 
 /* Inicializacao de variáveis */
-void vAPP_Init();
+void vAPP_Init(void);
 
 /* Funcoes estaticas */
 
