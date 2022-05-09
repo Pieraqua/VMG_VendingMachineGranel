@@ -23,6 +23,29 @@ void vAPP_Poll()
         #endif
 
         /* Tratamento estado enEsperaConexao */
+        
+        /* Caso tenha uma mensagem disponível no bluetooth, */
+        if(stConn.msgAvailable)
+        {
+          /* e a mensagem seja uma requisicao de venda de produtos, */
+          if(stConn.stMsg.type == enMensagemVendaProdutos)
+          {
+            /* Vai para o estado LendoDados e impede novas conexões */
+            stConn.conectado = TRUE;
+            svSwitchSuperstate(enLendoDados);
+          }
+          /* e a mensagem seja uma requisicao de adicao de creditos, */
+          else if (stConn.stMsg.type == enMensagemAdicaoCreditos)
+          {
+            /* Adiciona créditos ao usuário */
+            svAdicionaCreditos(stConn.stMsg);
+          }
+          /* Caso nao seja um pacote valido, descarta a mensagem. */
+          else vCONN_DescartaMensagem(&stConn);
+          
+        }
+        
+        
         delay(1000);
         svSwitchSuperstate(enLendoDados);
         
@@ -127,4 +150,9 @@ static void svSwitchSuperstate(enVMGStates estadoDesejado)
 {
   stAPP.ultimo_estado = stAPP.superestado;
   stAPP.superestado = estadoDesejado;
+}
+
+static void svAdicionaCreditos(STRUCT_MSG msg)
+{
+  
 }

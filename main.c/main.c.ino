@@ -12,6 +12,9 @@ void loop() {
 
   while(1)
   { 
+    #ifdef __DEBUG_MAIN
+    Serial.println("Loop main!");
+    #endif
     vAPP_Poll();
     
   }

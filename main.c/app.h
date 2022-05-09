@@ -1,6 +1,7 @@
 #ifndef __APP_H
 #define __APP_H
 
+#include "conexao.h"
 #include "serialdebug.h"
 
 /* Superestados da máquina de estados */
