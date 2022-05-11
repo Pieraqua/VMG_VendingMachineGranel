@@ -7,8 +7,10 @@ typedef enum{
   enMotor3
 }enMotor;
 
+/* Liga um motor de vibração. */
 void vLigaMotor(enMotor motor);
 
+/* Desliga um motor de vibração. */
 void vDesligaMotor(enMotor motor);
 
 #endif

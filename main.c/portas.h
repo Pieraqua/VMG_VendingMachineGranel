@@ -28,6 +28,7 @@ typedef struct{
   STRUCT_PORTA portas[3];
 }STRUCT_CTL_PORTAS;
 
+/* Deixa a porta *porta* *abertura* aberta. */
 bool bPORTA_SetaAbertura(enPorta porta, enAberturaPorta abertura);
 
 #endif __PORTAS_H

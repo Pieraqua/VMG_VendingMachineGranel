@@ -7,9 +7,9 @@
 #include "gendefs.h"
 
 /* Defines */
-#define MARGEM_BAIXA  0.75*pesos[atual]
-#define MARGEM_MEDIA 0.5*pesos[atual]
-#define MARGEM_ALTA 0.25*pesos[atual]
+#define MARGEM_BAIXA  0.75
+#define MARGEM_MEDIA 0.5
+#define MARGEM_ALTA 0.25
 
 
 /* Superestados da máquina de estados */

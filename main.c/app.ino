@@ -9,7 +9,7 @@ STRUCT_APP stAPP =
 
 void vAPP_Init()
 {
-  memset(pesos, 0, sizeof(uint16_t)*3);
+  memset(stAPP.pesos, 0, sizeof(uint16_t)*3);
 }
 
 void vAPP_Poll()
@@ -56,7 +56,7 @@ void vAPP_Poll()
         Serial.println("APP: Estado enLendoDados");
         #endif
 
-        vCONN_LeituraPesos(pesos);
+        vCONN_LeituraPesos((uint16_t*)&(stAPP.pesos));
 
         /* Tratamento estado enLendoDados */
         delay(1000);
@@ -95,19 +95,19 @@ void vAPP_Poll()
           svSwitchSuperstate(enAguardandoRecipiente);
         }
         
-        if(ui16MED_LeituraPeso(atual) < pesos[atual] - MARGEM_BAIXA)
+        if(ui16MED_LeituraPeso(atual) < stAPP.pesos[atual] - MARGEM_BAIXA*stAPP.pesos[atual])
         {
           //Abrir a porta bastante
         }
-        else if(ui16MED_LeituraPeso(atual) < pesos[atual] - MARGEM_MEDIA)
+        else if(ui16MED_LeituraPeso(atual) < stAPP.pesos[atual] - MARGEM_MEDIA*stAPP.pesos[atual])
         {
           //Abrir a porta não tanto
         }
-        else if(ui16MED_LeituraPeso(atual) < pesos[atual] - MARGEM_ALTA)
+        else if(ui16MED_LeituraPeso(atual) < stAPP.pesos[atual] - MARGEM_ALTA*stAPP.pesos[atual])
         {
           //Abrir a porta um pouco
         }
-        else if(ui16MED_LeituraPeso(atual) > pesos[atual])
+        else if(ui16MED_LeituraPeso(atual) > stAPP.pesos[atual])
         {
           //Fechar a porta
           
