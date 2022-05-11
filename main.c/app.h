@@ -29,6 +29,7 @@ typedef struct
   enVMGStates superestado;
   enVMGStates ultimo_estado;
   enVMGError erro;
+  uint16_t pesos[3];
 }STRUCT_APP;
 
 /* Funcao de polling da StateMachine */

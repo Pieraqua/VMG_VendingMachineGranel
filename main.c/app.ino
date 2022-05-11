@@ -9,7 +9,7 @@ STRUCT_APP stAPP =
 
 void vAPP_Init()
 {
-  
+  memset(pesos, 0, sizeof(uint16_t)*3);
 }
 
 void vAPP_Poll()
@@ -55,6 +55,8 @@ void vAPP_Poll()
         #ifdef __DEBUG_APP
         Serial.println("APP: Estado enLendoDados");
         #endif
+
+        vLeituraPesos(pesos);
 
         /* Tratamento estado enLendoDados */
         delay(1000);
