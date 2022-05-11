@@ -33,6 +33,11 @@ extern STRUCT_CONN stConn;
 
 /* Funcoes */
 void vCONN_DescartaMensagem(STRUCT_CONN* struct_conn);
+void vCONN_LeituraPesos(uint8_t* pesos);
+void vCONN_FechaConexao();
 
+bool bCONN_SendAck();
+bool bCONN_SendUserCredit();
+bool bCONN_SendAckRequest();
 
 #endif /* __CONN_H */

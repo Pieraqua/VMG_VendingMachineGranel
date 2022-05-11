@@ -3,6 +3,14 @@
 
 #include "conexao.h"
 #include "serialdebug.h"
+#include "medicao.h"
+#include "gendefs.h"
+
+/* Defines */
+#define MARGEM_BAIXA  0.75*pesos[atual]
+#define MARGEM_MEDIA 0.5*pesos[atual]
+#define MARGEM_ALTA 0.25*pesos[atual]
+
 
 /* Superestados da máquina de estados */
 typedef enum

@@ -56,7 +56,7 @@ void vAPP_Poll()
         Serial.println("APP: Estado enLendoDados");
         #endif
 
-        vLeituraPesos(pesos);
+        vCONN_LeituraPesos(pesos);
 
         /* Tratamento estado enLendoDados */
         delay(1000);
@@ -68,29 +68,69 @@ void vAPP_Poll()
         Serial.println("APP: Estado enAguardandoRecipiente");
         #endif
 
-        /* Tratamento estado enAguardandoRecipiente */
-        delay(1000);
-        svSwitchSuperstate(enEntregandoProduto);
+        /* Se detectar um recipiente volta a entregar o produto */
+        if(bMED_DetectaRecipiente())
+        {
+        #ifdef __DEBUG_APP
+        Serial.println("APP: Recipiente detectado");
+        #endif
+          svSwitchSuperstate(enEntregandoProduto);
+        }
+
+        
     break;
 
     case enEntregandoProduto:
         #ifdef __DEBUG_APP
         Serial.println("APP: Estado enEntregandoProduto");
         #endif
+        static uint8_t atual = 0;
 
-        /* Tratamento estado enEntregandoProduto */
-        delay(1000);
-        svSwitchSuperstate(enFechaConexao);
+        /* Se não detectar um recipiente */
+        if(!bMED_DetectaRecipiente())
+        {
+        #ifdef __DEBUG_APP
+        Serial.println("APP: Recipiente detectado");
+        #endif
+          svSwitchSuperstate(enAguardandoRecipiente);
+        }
+        
+        if(ui16MED_LeituraPeso(atual) < pesos[atual] - MARGEM_BAIXA)
+        {
+          //Abrir a porta bastante
+        }
+        else if(ui16MED_LeituraPeso(atual) < pesos[atual] - MARGEM_MEDIA)
+        {
+          //Abrir a porta não tanto
+        }
+        else if(ui16MED_LeituraPeso(atual) < pesos[atual] - MARGEM_ALTA)
+        {
+          //Abrir a porta um pouco
+        }
+        else if(ui16MED_LeituraPeso(atual) > pesos[atual])
+        {
+          //Fechar a porta
+          
+          //Ir para proxima caixa
+          atual++;
+        }
+        
+        /* Se fechou todas as caixas */
+        if(atual == 4)
+        {
+          atual = 0;
+          svSwitchSuperstate(enFechaConexao);
+        }
     break;
 
     case enFechaConexao:
         #ifdef __DEBUG_APP
         Serial.println("APP: Estado enFechaConexao");
         #endif
-
         /* Tratamento estado enFechaConexao */
-        delay(1000);
-        svRegistraErro(enErroMedida);
+
+        vCONN_FechaConexao();
+        
     break;
 
     case enErro:
