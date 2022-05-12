@@ -3,10 +3,11 @@
 
 
 typedef enum{
-  enPorta_1 = 0,
+  enPorta_Nenhuma = 0,
+  enPorta_1,
   enPorta_2,
   enPorta_3,
-  enPorta_Nenhuma
+  
 }enPorta;
 
 typedef enum{
@@ -20,15 +21,20 @@ typedef struct{
   enPorta numeroPorta;
   enAberturaPorta aberturaAtual;
   enAberturaPorta aberturaDesejada;
-  bool portaAtivada;
+  
 }STRUCT_PORTA;
 
 typedef struct{
   enPorta portaAtual;
   STRUCT_PORTA portas[3];
+  bool portaAtivada;
 }STRUCT_CTL_PORTAS;
+
+extern STRUCT_CTL_PORTAS stPortas;
 
 /* Deixa a porta *porta* *abertura* aberta. */
 bool bPORTA_SetaAbertura(enPorta porta, enAberturaPorta abertura);
 
-#endif __PORTAS_H
+void vPORTA_Init();
+
+#endif /* __PORTAS_H */

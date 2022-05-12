@@ -5,6 +5,7 @@
 #include "serialdebug.h"
 #include "medicao.h"
 #include "gendefs.h"
+#include "portas.h"
 
 /* Defines */
 #define MARGEM_BAIXA  0.75
@@ -17,7 +18,9 @@ typedef enum
 {
   enEsperaConexao = 0,
   enLendoDados,
+  enAdicionandoCreditos,
   enAguardandoRecipiente,
+  enAguardandoRemoverRecipiente,
   enEntregandoProduto,
   enFechaConexao,
   enErro
@@ -28,7 +31,8 @@ typedef enum
 {
   enErroNenhum = 0,
   enErroMedida,
-  enErroEstoque
+  enErroEstoque,
+  enErroPortas
 }enVMGError;
 
 /* Estrutura com as informacoes da aplicacao */

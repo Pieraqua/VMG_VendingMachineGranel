@@ -33,11 +33,15 @@ extern STRUCT_CONN stConn;
 
 /* Funcoes */
 void vCONN_DescartaMensagem(STRUCT_CONN* struct_conn);
+
 void vCONN_LeituraPesos(uint16_t* pesos);
+
 void vCONN_FechaConexao();
 
 bool bCONN_SendAck();
-bool bCONN_SendUserCredit();
+/* Envia pedido de adição de créditos ao banco de dados */
+bool bCONN_SendUserCredit(STRUCT_MSG* mensagem);
+
 bool bCONN_SendAckRequest();
 
 #endif /* __CONN_H */

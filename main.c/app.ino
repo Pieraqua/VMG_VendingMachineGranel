@@ -10,6 +10,9 @@ STRUCT_APP stAPP =
 void vAPP_Init()
 {
   memset(stAPP.pesos, 0, sizeof(uint16_t)*3);
+
+  vPORTA_Init();
+  
 }
 
 void vAPP_Poll()
@@ -38,17 +41,28 @@ void vAPP_Poll()
           else if (stConn.stMsg.type == enMensagemAdicaoCreditos)
           {
             /* Adiciona créditos ao usuário */
-            svAdicionaCreditos(stConn.stMsg);
+            stConn.conectado = TRUE;
+            svSwitchSuperstate(enAdicionandoCreditos);
           }
           /* Caso nao seja um pacote valido, descarta a mensagem. */
           else vCONN_DescartaMensagem(&stConn);
           
         }
         
-        
-        delay(1000);
         svSwitchSuperstate(enLendoDados);
         
+    break;
+
+    case enAdicionandoCreditos:
+        #ifdef __DEBUG_APP
+        Serial.println("APP: Estado enAdicionandoCreditos");
+        #endif
+
+        /* Envia pedido de adição de créditos ao banco de dados */
+        bCONN_SendUserCredit(&stConn.stMsg);
+        vCONN_DescartaMensagem(&stConn);
+        stConn.conectado = FALSE;
+        svSwitchSuperstate(enEsperaConexao);
     break;
 
     case enLendoDados:
@@ -59,8 +73,7 @@ void vAPP_Poll()
         vCONN_LeituraPesos((uint16_t*)&(stAPP.pesos));
 
         /* Tratamento estado enLendoDados */
-        delay(1000);
-        svSwitchSuperstate(enAguardandoRecipiente);
+        svSwitchSuperstate(enEntregandoProduto);
     break;
 
     case enAguardandoRecipiente:
@@ -90,26 +103,59 @@ void vAPP_Poll()
         if(!bMED_DetectaRecipiente())
         {
         #ifdef __DEBUG_APP
-        Serial.println("APP: Recipiente detectado");
+        Serial.println("APP: Recipiente não detectado");
         #endif
           svSwitchSuperstate(enAguardandoRecipiente);
+          break;
         }
         
         if(ui16MED_LeituraPeso(atual) < stAPP.pesos[atual] - MARGEM_BAIXA*stAPP.pesos[atual])
         {
           //Abrir a porta bastante
+          if(bPORTA_SetaAbertura((enPorta)atual, portaAberta))
+          {
+            
+          }
+          else
+          {
+            svRegistraErro(enErroPortas);
+          }
         }
         else if(ui16MED_LeituraPeso(atual) < stAPP.pesos[atual] - MARGEM_MEDIA*stAPP.pesos[atual])
         {
           //Abrir a porta não tanto
+          if(bPORTA_SetaAbertura((enPorta)atual, portaPoucoFechada))
+          {
+            
+          }
+          else
+          {
+            svRegistraErro(enErroPortas);
+          }
         }
         else if(ui16MED_LeituraPeso(atual) < stAPP.pesos[atual] - MARGEM_ALTA*stAPP.pesos[atual])
         {
           //Abrir a porta um pouco
+          if(bPORTA_SetaAbertura((enPorta)atual, portaPoucoAberta))
+          {
+            
+          }
+          else
+          {
+            svRegistraErro(enErroPortas);
+          }
         }
         else if(ui16MED_LeituraPeso(atual) > stAPP.pesos[atual])
         {
           //Fechar a porta
+          if(bPORTA_SetaAbertura((enPorta)atual, portaFechada))
+          {
+            
+          }
+          else
+          {
+            svRegistraErro(enErroPortas);
+          }
           
           //Ir para proxima caixa
           atual++;
@@ -168,13 +214,22 @@ static void svRegistraErro(enVMGError erro)
       #ifdef __DEBUG_APP
       Serial.println("falta de estoque");
       #endif
+      stAPP.erro = enErroEstoque;
       break;
       
     case enErroMedida:
       #ifdef __DEBUG_APP
       Serial.println("de medida");
       #endif
+      stAPP.erro = enErroMedida;
       break;
+      
+    case enErroPortas:
+      #ifdef __DEBUG_APP
+      Serial.println("de portas");
+      #endif
+      stAPP.erro = enErroPortas;
+    break;
       
     default:
       #ifdef __DEBUG_APP

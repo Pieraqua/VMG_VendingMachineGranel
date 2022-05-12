@@ -10,6 +10,7 @@ char debugBuffer[50];
 
 /* Para ativar ou desativar mensagens de debug basta comentar as definicoes */
 #define __DEBUG_APP
+//#define __DEBUG_MAIN
 
 #endif /* DEBUG_ENABLE */
 
