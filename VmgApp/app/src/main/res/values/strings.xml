@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">BluetoothExample</string>
+    /* Tela de adição de créditos */
+    <string name="textoCreditos">Insira seu código promocional.</string>
+    <string name="textoBotaoCreditos">Aceitar</string>
+    <string name="creditosAtuaisDefault">R$00.00</string>
+    <string name="telaCreditos">Adicionar Créditos</string>
+    <string name="seusCreditos">Créditos Atuais</string>
+
+    /* Tela de seleção de produtos */
+    <string name="item1">Amendoim</string>
+    <string name="item2">Castanha de Caju</string>
+    <string name="item3">Castanha do Pará</string>
+    <string name="selecioneProdutos">Selecione os produtos desejados</string>
+    <string name="voceSelecionou">Você selecionou:</string>
+    /* Tela de seleção de pesos */
+
+    /* Tela de confirmação de compras */
+
+    /* Tela de conexao */
+
+    /* Botões gerais */
+    <string name="button_voltar">VOLTAR</string>
+    <string name="aceitar">ACEITAR</string>
+</resources>
