@@ -1,6 +1,9 @@
 #ifndef __PORTAS_H
 #define __PORTAS_H
 
+#include <ESP32Servo.h>
+#include <analogWrite.h>
+#include <ESP32PWM.h>
 
 typedef enum{
   enPorta_Nenhuma = 0,
@@ -12,16 +15,17 @@ typedef enum{
 
 typedef enum{
   portaFechada = 0,
-  portaPoucoAberta,
-  portaPoucoFechada,
-  portaAberta
+  portaPoucoAberta = 60,
+  portaPoucoFechada = 120,
+  portaAberta = 180
 }enAberturaPorta;
 
 typedef struct{
   enPorta numeroPorta;
-  enAberturaPorta aberturaAtual;
-  enAberturaPorta aberturaDesejada;
-  
+  uint8_t aberturaAtual;
+  uint8_t aberturaDesejada;
+  Servo servo;
+  volatile int16_t moveTimer;
 }STRUCT_PORTA;
 
 typedef struct{
@@ -36,5 +40,7 @@ extern STRUCT_CTL_PORTAS stPortas;
 bool bPORTA_SetaAbertura(enPorta porta, enAberturaPorta abertura);
 
 void vPORTA_Init();
+
+void vPORTA_Poll();
 
 #endif /* __PORTAS_H */
