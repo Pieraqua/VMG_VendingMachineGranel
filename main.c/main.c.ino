@@ -33,6 +33,8 @@ void setup() {
 
   vMOTOR_Init();
 
+  vPROX_Init();
+
   /* Systick a cada milisegundo */
   timer = timerBegin(0, 80, true);
   timerAttachInterrupt(timer, &SysTickHandler, true);
