@@ -31,6 +31,8 @@ void setup() {
 
   vPORTA_Init();
 
+  vMOTOR_Init();
+
   /* Systick a cada milisegundo */
   timer = timerBegin(0, 80, true);
   timerAttachInterrupt(timer, &SysTickHandler, true);
