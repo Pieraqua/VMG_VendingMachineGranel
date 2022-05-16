@@ -16,8 +16,13 @@
     /* Tela de seleção de pesos */
 
     /* Tela de confirmação de compras */
+    <string name="voceEscolheu">Você escolheu:</string>
+    <string name="cancelarCompra">Cancelar</string>
+    <string name="confirmarCompra">Confirmar</string>
 
     /* Tela de conexao */
+    <string name="confirmConnect">Conectar</string>
+    <string name="botaoAdicionarCreditos">Adicionar Créditos</string>
 
     /* Botões gerais */
     <string name="button_voltar">VOLTAR</string>
