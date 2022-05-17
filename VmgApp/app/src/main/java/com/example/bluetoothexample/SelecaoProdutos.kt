@@ -1,5 +1,6 @@
 package com.example.bluetoothexample
 
+import android.bluetooth.BluetoothManager
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -7,6 +8,11 @@ import android.widget.Button
 import android.widget.TextView
 
 class SelecaoProdutos : AppCompatActivity() {
+    companion object ListaProdutos{
+        val listaDeProdutos: Array<Produto> =
+            Array(3) { Produto(nome = "", peso = 0, escolhido = false) }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_selecao_produtos)
@@ -19,7 +25,6 @@ class SelecaoProdutos : AppCompatActivity() {
         val textItem2 = findViewById<TextView>(R.id.tvItem2)
         val textItem3 = findViewById<TextView>(R.id.tvItem3)
 
-        val listaDeProdutos : Array<Produto> = Array(3) {Produto(nome = "", peso = 0, escolhido = false)}
 
         listaDeProdutos[0].nome = "Amendoim"
         listaDeProdutos[1].nome = "Castanha de Caju"

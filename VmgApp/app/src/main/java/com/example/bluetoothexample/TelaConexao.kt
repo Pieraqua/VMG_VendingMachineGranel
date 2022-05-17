@@ -1,5 +1,7 @@
 package com.example.bluetoothexample
 
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothManager
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -16,5 +18,7 @@ class TelaConexao : AppCompatActivity() {
 
             startActivity(intent)
         }
+
+
     }
 }

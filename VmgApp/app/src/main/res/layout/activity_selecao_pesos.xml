@@ -5,15 +5,65 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SelecaoPesos">
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/telaSelecao"
-        android:text="@+string/telaCreditos"
+
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:layout_constraintTop_toTopOf="parent"/>
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/tvPesoAtual"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginVertical="10dp"
+        android:text="@string/placeholder"
+        android:id="@+id/tvItemAtual"
+        android:textAlignment="center"
+        android:textSize="50dp"
+        />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/bConfirmarPeso"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginVertical="10dp"
+        android:text="@string/placeholder"
+        android:id="@+id/tvPesoAtual"
+        android:textAlignment="center"
+        android:textSize="50dp"
+        />
+    <Button
+        android:layout_width="130dp"
+        android:layout_height="80dp"
+        android:id="@+id/bMenos50g"
+        android:text="@string/bMenos50g"
+        app:layout_constraintTop_toBottomOf="@id/tvPesoAtual"
+        app:layout_constraintEnd_toStartOf="@id/bConfirmarPeso"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginVertical="10dp"
+        android:textSize="30dp"
+        />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:id="@+id/bConfirmarPeso"
+        android:text="@string/bConfirmar"
+        android:textSize="40dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginVertical="10dp"
+        />
+    <Button
+        android:layout_width="130dp"
+        android:layout_height="80dp"
+        android:id="@+id/bMais50g"
+        android:text="@string/bMais50g"
+        android:textSize="30dp"
+        app:layout_constraintTop_toBottomOf="@id/tvPesoAtual"
+        app:layout_constraintStart_toEndOf="@id/bConfirmarPeso"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginVertical="10dp"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

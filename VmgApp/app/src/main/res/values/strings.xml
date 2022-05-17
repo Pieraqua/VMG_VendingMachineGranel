@@ -30,4 +30,13 @@
 
     /* Recycler view */
     <string name="nomeproduto_1">Amendoim</string>
+
+    /* Strings gerais */
+    <string name="placeholder">PLACEHOLDER</string>
+    <string name="bMenos50g">-50g</string>
+    <string name="bMais50g">+50g</string>
+    <string name="bConfirmar">OK</string>
+    <string name="tvItem3Confirmacao">Castanha de Caju: 0g</string>
+    <string name="tvItem2Confirmacao">Castanha do Pará: 0g</string>
+    <string name="tvItem1Confirmacao">Amendoim: 0g</string>
 </resources>

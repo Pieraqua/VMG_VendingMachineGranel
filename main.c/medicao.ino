@@ -10,9 +10,3 @@ uint16_t ui16MED_LeituraPeso(uint8_t peso)
 {
   return 0;
 }
-
-/* Detetcta se existe um recipiente esperando por produtos */
-bool bMED_DetectaRecipiente(void)
-{
-  return false;
-}
