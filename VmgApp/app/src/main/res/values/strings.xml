@@ -27,4 +27,7 @@
     /* Botões gerais */
     <string name="button_voltar">VOLTAR</string>
     <string name="aceitar">ACEITAR</string>
+
+    /* Recycler view */
+    <string name="nomeproduto_1">Amendoim</string>
 </resources>
