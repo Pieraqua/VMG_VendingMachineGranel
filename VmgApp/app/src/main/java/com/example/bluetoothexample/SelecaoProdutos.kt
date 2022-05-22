@@ -18,6 +18,7 @@ class SelecaoProdutos : AppCompatActivity() {
         setContentView(R.layout.activity_selecao_produtos)
         val buttonConfirmarEscolha = findViewById<Button>(R.id.confirm_button_produtos)
 
+        resetListaCompras()
         displayEscolhidos()
 
         buttonConfirmarEscolha.setOnClickListener{
@@ -40,6 +41,7 @@ class SelecaoProdutos : AppCompatActivity() {
         setContentView(R.layout.activity_selecao_produtos)
         val buttonConfirmarEscolha = findViewById<Button>(R.id.confirm_button_produtos)
 
+        resetListaCompras()
         displayEscolhidos()
 
         buttonConfirmarEscolha.setOnClickListener{
@@ -53,6 +55,16 @@ class SelecaoProdutos : AppCompatActivity() {
             }
 
         }
+    }
+
+    fun resetListaCompras()
+    {
+        SelecaoProdutos.listaDeProdutos[0].peso = 0
+
+        SelecaoProdutos.listaDeProdutos[1].peso = 0
+
+        SelecaoProdutos.listaDeProdutos[2].peso = 0
+
     }
 
     fun displayEscolhidos()
