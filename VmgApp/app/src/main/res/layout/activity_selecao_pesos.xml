@@ -18,7 +18,8 @@
         android:textAlignment="center"
         android:textSize="50dp"
         />
-    <EditText
+    <TextView
+        android:textColor="@color/black"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@id/bConfirmarPeso"

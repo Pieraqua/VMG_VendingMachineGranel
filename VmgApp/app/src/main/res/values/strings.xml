@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BluetoothExample</string>
+    <string name="app_name">VMG App</string>
     /* Tela de adição de créditos */
     <string name="textoCreditos">Insira seu código promocional.</string>
     <string name="textoBotaoCreditos">Aceitar</string>
@@ -39,4 +39,7 @@
     <string name="tvItem3Confirmacao">Castanha de Caju: 0g</string>
     <string name="tvItem2Confirmacao">Castanha do Pará: 0g</string>
     <string name="tvItem1Confirmacao">Amendoim: 0g</string>
+    <string name="valorTotalCastanhaPara">Castanha do Pará: %d g</string>
+    <string name="valorTotalCastanhaCaju">Castanha de Caju: %d g</string>
+    <string name="valorTotalAmendoim">Amendoim: %d g</string>
 </resources>

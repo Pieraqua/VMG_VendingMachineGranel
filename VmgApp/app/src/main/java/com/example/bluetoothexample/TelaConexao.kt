@@ -15,10 +15,24 @@ class TelaConexao : AppCompatActivity() {
         val buttonConfirmarConexao:Button = findViewById(R.id.confirmConnect)
         buttonConfirmarConexao.setOnClickListener{
             val intent = Intent(this@TelaConexao, SelecaoProdutos::class.java)
-
+            resetListaCompras()
             startActivity(intent)
         }
 
+
+
+    }
+
+    fun resetListaCompras()
+    {
+        SelecaoProdutos.listaDeProdutos[0].peso = 0
+        SelecaoProdutos.listaDeProdutos[0].escolhido = false
+
+        SelecaoProdutos.listaDeProdutos[1].peso = 0
+        SelecaoProdutos.listaDeProdutos[1].escolhido = false
+
+        SelecaoProdutos.listaDeProdutos[2].peso = 0
+        SelecaoProdutos.listaDeProdutos[2].escolhido = false
 
     }
 }
