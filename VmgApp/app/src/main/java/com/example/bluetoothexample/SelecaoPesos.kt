@@ -7,9 +7,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 
-/* TODO BUG: Se ir para a próxima tela, voltar e apertar um botão o app crasha. */
-/* Talvez dê pra resolver com a função onResume?                                */
-
 class SelecaoPesos : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +20,8 @@ class SelecaoPesos : AppCompatActivity() {
         val tvPesoAtual = findViewById<TextView>(R.id.tvPesoAtual)
 
         var produtoAtual = 0
+
+
 
         while(!SelecaoProdutos.listaDeProdutos[produtoAtual].escolhido)
         {
