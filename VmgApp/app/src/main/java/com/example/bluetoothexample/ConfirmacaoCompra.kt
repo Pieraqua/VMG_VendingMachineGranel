@@ -23,6 +23,9 @@ class ConfirmacaoCompra : AppCompatActivity() {
         tvAmendoimConfirmacao.text = getString(R.string.valorTotalCastanhaCaju).format(SelecaoProdutos.listaDeProdutos[1].peso)
         tvAmendoimConfirmacao.text = getString(R.string.valorTotalCastanhaPara).format(SelecaoProdutos.listaDeProdutos[2].peso)
 
+        configText()
+        configButtons()
+
         bConfirmarCompra.setOnClickListener{
             /* Enviar info para a VMG e esperar o ACK */
 
@@ -57,6 +60,9 @@ class ConfirmacaoCompra : AppCompatActivity() {
         val bConfirmarCompra: Button = findViewById<Button>(R.id.confirmarCompra)
         val bCancelarCompra: Button = findViewById<Button>(R.id.botaoCancelar)
 
+        configText()
+        configButtons()
+
         tvAmendoimConfirmacao.text = getString(R.string.valorTotalAmendoim).format(SelecaoProdutos.listaDeProdutos[0].peso)
         tvCastanhaCajuConfirmacao.text = getString(R.string.valorTotalCastanhaCaju).format(SelecaoProdutos.listaDeProdutos[1].peso)
         tvCastanhaParaConfirmacao.text = getString(R.string.valorTotalCastanhaPara).format(SelecaoProdutos.listaDeProdutos[2].peso)
@@ -84,7 +90,26 @@ class ConfirmacaoCompra : AppCompatActivity() {
         }
     }
 
+    fun configButtons()
+    {
+        val bModoMisto = findViewById<Button>(R.id.botaoModoMisto)
 
+        bModoMisto.setOnClickListener {
+            SelecaoProdutos.modoMisto = !SelecaoProdutos.modoMisto
+            configText()
+        }
+    }
+
+    fun configText()
+    {
+        val tvModoMisto = findViewById<TextView>(R.id.modoMisto)
+
+        if(SelecaoProdutos.modoMisto == false)
+            tvModoMisto.text = "Entregar Separado"
+        if(SelecaoProdutos.modoMisto == true)
+            tvModoMisto.text = "Entregar Junto"
+
+    }
 
 
 }

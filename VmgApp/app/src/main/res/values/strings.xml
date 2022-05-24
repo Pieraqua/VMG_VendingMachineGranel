@@ -19,6 +19,8 @@
     <string name="voceEscolheu">Você escolheu:</string>
     <string name="cancelarCompra">Cancelar</string>
     <string name="confirmarCompra">Confirmar</string>
+    <string name="modoMisto">Entregar Separado</string>
+    <string name="botaoModoMisto">Modo de Entrega</string>
 
     /* Tela de conexao */
     <string name="confirmConnect">Conectar</string>

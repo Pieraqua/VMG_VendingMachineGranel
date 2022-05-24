@@ -11,6 +11,7 @@ class SelecaoProdutos : AppCompatActivity() {
     companion object ListaProdutos{
         val listaDeProdutos: Array<Produto> =
             Array(3) { Produto(nome = "", peso = 0, escolhido = false) }
+        var modoMisto : Boolean = false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
