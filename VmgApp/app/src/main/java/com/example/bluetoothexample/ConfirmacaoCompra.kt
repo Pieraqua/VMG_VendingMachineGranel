@@ -56,6 +56,7 @@ class ConfirmacaoCompra : AppCompatActivity() {
         val tvAmendoimConfirmacao: TextView = findViewById<TextView>(R.id.tvItem1Confirmacao)
         val tvCastanhaCajuConfirmacao: TextView = findViewById<TextView>(R.id.tvItem2Confirmacao)
         val tvCastanhaParaConfirmacao: TextView = findViewById<TextView>(R.id.tvItem3Confirmacao)
+        val tvAvisoPeso: TextView = findViewById<TextView>(R.id.tvAvisoPeso)
 
         val bConfirmarCompra: Button = findViewById<Button>(R.id.confirmarCompra)
         val bCancelarCompra: Button = findViewById<Button>(R.id.botaoCancelar)
@@ -68,15 +69,26 @@ class ConfirmacaoCompra : AppCompatActivity() {
         tvCastanhaParaConfirmacao.text = getString(R.string.valorTotalCastanhaPara).format(SelecaoProdutos.listaDeProdutos[2].peso)
 
         bConfirmarCompra.setOnClickListener{
-            /* Enviar info para a VMG e esperar o ACK */
 
-            /* Tela de "Processo em andamento"? */
+            if(!SelecaoProdutos.modoMisto || SelecaoProdutos.modoMisto &&
+                    SelecaoProdutos.listaDeProdutos[0].peso +
+                    SelecaoProdutos.listaDeProdutos[1].peso +
+                    SelecaoProdutos.listaDeProdutos[2].peso < 900
+                    ) {
+                /* Enviar info para a VMG e esperar o ACK */
+
+                /* Tela de "Processo em andamento"? */
 
 
-            /* Voltar para primeira tela */
-            val intent = Intent(this@ConfirmacaoCompra, TelaConexao::class.java)
+                /* Voltar para primeira tela */
+                val intent = Intent(this@ConfirmacaoCompra, TelaConexao::class.java)
 
-            startActivity(intent)
+                startActivity(intent)
+            }
+            else{
+                /* TODO: Aviso quanto ao peso máximo */
+                tvAvisoPeso.text = "Peso maximo excedido para entrega mista!"
+            }
         }
 
         bCancelarCompra.setOnClickListener{

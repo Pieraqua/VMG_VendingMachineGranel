@@ -77,6 +77,16 @@
         android:layout_marginHorizontal="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvAvisoPeso"
+        app:layout_constraintTop_toBottomOf="@id/botaoModoMisto"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="20sp"/>
+
     <Button
         android:layout_width="170dp"
         android:layout_height="70dp"
