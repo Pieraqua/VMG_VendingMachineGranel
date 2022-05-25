@@ -5,8 +5,11 @@ import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
+import android.content.BroadcastReceiver
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -21,7 +24,33 @@ class TelaConexao : AppCompatActivity() {
         val usuario : Usuario = Usuario(0.0F, 0)
 
     }
+    var mmSocket: BluetoothSocket? = null
+    var device : BluetoothDevice? = null
+    var paired : Boolean = false
+    // Create a BroadcastReceiver for ACTION_FOUND.
+    private val receiver = object : BroadcastReceiver() {
 
+        @SuppressLint("MissingPermission")
+        override fun onReceive(context: Context, intent: Intent) {
+            val action: String? = intent.action
+            when(action) {
+                BluetoothDevice.ACTION_FOUND -> {
+                    // Discovery has found a device. Get the BluetoothDevice
+                    // object and its info from the Intent.
+                    val deviceb: BluetoothDevice? =
+                        intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
+                    val deviceName = deviceb?.name
+                    val deviceHardwareAddress = deviceb?.address // MAC address
+
+                    if(deviceName == "VMGaGranel")
+                    {
+                        device = deviceb
+                        paired = true
+                    }
+                }
+            }
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tela_conexao)
@@ -32,7 +61,8 @@ class TelaConexao : AppCompatActivity() {
             val intent = Intent(this@TelaConexao, SelecaoProdutos::class.java)
             resetListaCompras()
 
-            //val threadConexao = ConnectThread()
+            val threadConexao = ConnectThread()
+            threadConexao.start()
 
             startActivity(intent)
         }
@@ -42,7 +72,6 @@ class TelaConexao : AppCompatActivity() {
             val intent = Intent(this@TelaConexao, AdicaoCreditos::class.java)
             startActivity(intent)
         }
-
     }
 
     fun resetListaCompras()
@@ -59,16 +88,14 @@ class TelaConexao : AppCompatActivity() {
     }
 
     @SuppressLint("MissingPermission")
-    private inner class ConnectThread(device : BluetoothDevice) : Thread() {
+    private inner class ConnectThread() : Thread() {
 
 
         private val MY_UUID : UUID = UUID(0x12345678, 0x12345678)
-        private val mmSocket: BluetoothSocket? by lazy(LazyThreadSafetyMode.NONE) {
-            /* TODO: Implement scan */
-            device.createRfcommSocketToServiceRecord(MY_UUID)
-        }
 
-        public override fun run() {
+
+        override fun run() {
+            /* Pega adaptador bluetooth e permissões */
             val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
             if (bluetoothAdapter == null) {
                 // Device doesn't support Bluetooth
@@ -88,10 +115,41 @@ class TelaConexao : AppCompatActivity() {
                     //                                          int[] grantResults)
                     // to handle the case where the user grants the permission. See the documentation
                     // for ActivityCompat#requestPermissions for more details.
+
                     return
                 }
                 startActivityForResult(enableBtIntent, 1)
             }
+
+            val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
+            pairedDevices?.forEach { devicepaired ->
+                val deviceName = devicepaired.name
+                val deviceHardwareAddress = devicepaired.address // MAC address
+
+                if(deviceName == "VMGaGranel")
+                {
+                    paired = true
+                    device = devicepaired
+                }
+            }
+
+            if(!paired)
+            {
+                /* TODO: Implement scan */
+                // Register for broadcasts when a device is discovered.
+                /* Bluetooth */
+                val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
+                registerReceiver(receiver, filter)
+
+                while(!paired)
+                {}
+
+                unregisterReceiver(receiver)
+            }
+
+            mmSocket = device?.createRfcommSocketToServiceRecord(MY_UUID)
+
+
 
             mmSocket?.let { socket ->
                 // Connect to the remote device through the socket. This call blocks
@@ -108,6 +166,7 @@ class TelaConexao : AppCompatActivity() {
         fun cancel() {
             try {
                 mmSocket?.close()
+                unregisterReceiver(receiver)
             } catch (e: IOException) {
                 Log.e(TAG, "Could not close the client socket", e)
             }
