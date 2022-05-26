@@ -22,19 +22,15 @@ void vPORTA_Init()
   stPortas.portas[2].numeroPorta = enPorta_3;
 
   stPortas.portas[0].servo.attach(23);
-  stPortas.portas[0].servo.attach(3);
-  stPortas.portas[0].servo.attach(18);
+  //stPortas.portas[1].servo.attach(5);
+  stPortas.portas[2].servo.attach(18);
 
-
+  int i = 0;
   /* Configura os servos para suas posições iniciais (fechado) */
   while(stPortas.portas[0].aberturaAtual != stPortas.portas[0].aberturaDesejada &&
           stPortas.portas[1].aberturaAtual != stPortas.portas[1].aberturaDesejada &&
             stPortas.portas[2].aberturaAtual != stPortas.portas[2].aberturaDesejada){
-    /* Para cada porta, */
-    for(int i = 0; i < 3; i++){
-      /* Se a porta terminou seu último movimento, */
-      if(stPortas.portas[i].moveTimer == 0)
-      {
+      /* Para cada porta, */
         /* Mova a porta para cima ou para baixo, de acordo com a abertura atual e desejada. */
         if(stPortas.portas[i].aberturaAtual < stPortas.portas[i].aberturaDesejada)
         { 
@@ -46,8 +42,15 @@ void vPORTA_Init()
           stPortas.portas[i].aberturaAtual--;
           stPortas.portas[i].servo.write(stPortas.portas[i].aberturaAtual);
         }
+      
+      if(stPortas.portas[i].aberturaAtual == stPortas.portas[i].aberturaDesejada)
+      {
+        i++;
       }
-    }
+      
+      if(i == 3)
+          i = 0;
+   
     delay(15);
   }
 }
@@ -61,14 +64,21 @@ bool bPORTA_SetaAbertura(enPorta porta, enAberturaPorta abertura)
   return true;
 }
 
+enAberturaPorta getAberturaPorta(enPorta porta)
+{
+  return (enAberturaPorta)stPortas.portas[porta].aberturaAtual;
+}
+
 /* Função de polling que controla as portas */
 void vPORTA_Poll()
 {
   /* Para cada porta, */
-  for(int i = 0; i < 3; i++){
+  static int i = 0;
     /* Se a porta terminou seu último movimento, */
     if(stPortas.portas[i].moveTimer <= 0)
     {
+      /* Seta o timer da porta para 15ms */
+      stPortas.portas[i].moveTimer = 20;
       /* Mova a porta para cima ou para baixo, de acordo com a abertura atual e desejada. */
       if(stPortas.portas[i].aberturaAtual < stPortas.portas[i].aberturaDesejada)
       { 
@@ -80,9 +90,12 @@ void vPORTA_Poll()
         stPortas.portas[i].aberturaAtual--;
         stPortas.portas[i].servo.write(stPortas.portas[i].aberturaAtual);
       }
-
-      /* Seta o timer da porta para 15ms */
-      stPortas.portas[i].moveTimer = 15;
+      else if(stPortas.portas[i].aberturaAtual == stPortas.portas[i].aberturaDesejada)
+      {
+        i++;
+        if(i >= 3)
+          i = 0;
+      }
     }
-  }
+  
 }

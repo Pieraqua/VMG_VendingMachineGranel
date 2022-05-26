@@ -7,4 +7,4 @@ void vPROX_Init();
 
 bool bPROX_DetectaEmbalagem();
 
-#endif __PROXIMIDADE_H
+#endif

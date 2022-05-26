@@ -3,7 +3,7 @@
 
 #include <Wire.h>
 
-#define I2C_SDA 34
+#define I2C_SDA 36
 #define I2C_SCK 14
 
 void vMED_Init();

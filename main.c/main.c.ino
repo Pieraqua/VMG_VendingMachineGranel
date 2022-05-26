@@ -1,5 +1,6 @@
 /* Programa da VMG para Oficinas de Integração 2 */
 #include "app.h"
+#include "teste.h"
 
 /* Systick timer */
 hw_timer_t * timer = NULL;
@@ -25,15 +26,15 @@ void IRAM_ATTR SysTickHandler(void)
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
-  vMED_Init();
+  //vMED_Init();
   
   vAPP_Init();
 
   vPORTA_Init();
 
-  vMOTOR_Init();
+  //vMOTOR_Init();
 
-  vPROX_Init();
+  //vPROX_Init();
 
   /* Systick a cada milisegundo */
   timer = timerBegin(0, 80, true);
@@ -50,7 +51,8 @@ void loop() {
     #ifdef __DEBUG_MAIN
     Serial.println("Loop main!");
     #endif
-    vAPP_Poll();
+    vTESTE_Poll();
+    //vAPP_Poll();
     vPORTA_Poll();
     
   }
