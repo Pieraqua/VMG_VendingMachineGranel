@@ -43,7 +43,7 @@ class SelecaoPesos : AppCompatActivity() {
         tvItemAtual.text = SelecaoProdutos.listaDeProdutos[produtoAtual].nome
 
         botaoMais50.setOnClickListener{
-            if(SelecaoProdutos.listaDeProdutos[produtoAtual].peso + 50 <= 2000)
+            if(SelecaoProdutos.listaDeProdutos[produtoAtual].peso + 50 <= 500)
                 SelecaoProdutos.listaDeProdutos[produtoAtual].peso += 50
 
             val stringAtual: String = String.format("%d g", SelecaoProdutos.listaDeProdutos[produtoAtual].peso)

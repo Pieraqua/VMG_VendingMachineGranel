@@ -2,7 +2,7 @@
 
 void vMED_Init()
 {
-  Wire.begin(I2C_SDA, I2C_SCK);
+  //Wire.begin(I2C_SDA, I2C_SCK);
 }
 
 /* Mede o peso da balança da caixa peso e retorna o peso */

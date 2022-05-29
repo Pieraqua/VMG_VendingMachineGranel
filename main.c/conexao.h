@@ -2,8 +2,10 @@
 #define __CONN_H
 
 #include "gendefs.h"
+#include "BluetoothSerial.h"
 
 /* Estruturas de dados */
+BluetoothSerial SerialBT;
 
 /* Enums */
 typedef enum
@@ -32,6 +34,8 @@ typedef struct
 extern STRUCT_CONN stConn;
 
 /* Funcoes */
+void vCONN_Init();
+
 void vCONN_DescartaMensagem(STRUCT_CONN* struct_conn);
 
 void vCONN_LeituraPesos(uint16_t* pesos);

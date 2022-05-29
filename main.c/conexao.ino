@@ -1,12 +1,20 @@
 #include "conexao.h"
 
-
+#if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
+#error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
+#endif
 /* Estrutura de controle de conexão */
 STRUCT_CONN stConn = 
 {
   .msgAvailable = FALSE,
   .conectado = 0
 };
+
+void vCONN_Init()
+{
+  SerialBT.begin("VMGaGranel", true);
+  Serial.println("Bluetooth iniciado. ID: VMGaGranel");
+}
 
 void vCONN_FechaConexao()
 {
@@ -28,7 +36,10 @@ void vCONN_DescartaMensagem(STRUCT_CONN* struct_conn)
 /* Trata dos pacotes recebidos pela comunicação bluetooth */
 void vCONN_Poll()
 {
-  
+  if (SerialBT.available()) {
+    int msg = SerialBT.read();
+    Serial.println(msg);
+  }
 }
 
 /* Envia um pacote de ACK para o aplicativo */
