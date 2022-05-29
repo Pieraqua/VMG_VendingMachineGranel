@@ -82,7 +82,7 @@ void vAPP_Poll()
         #endif
 
         /* Se detectar um recipiente volta a entregar o produto */
-        if(bMED_DetectaRecipiente())
+        if(bPROX_DetectaEmbalagem())
         {
         #ifdef __DEBUG_APP
         Serial.println("APP: Recipiente detectado");
@@ -100,7 +100,7 @@ void vAPP_Poll()
         static uint8_t atual = 0;
 
         /* Se não detectar um recipiente */
-        if(!bMED_DetectaRecipiente())
+        if(!bPROX_DetectaEmbalagem())
         {
         #ifdef __DEBUG_APP
         Serial.println("APP: Recipiente não detectado");
@@ -162,7 +162,7 @@ void vAPP_Poll()
         }
         
         /* Se fechou todas as caixas */
-        if(atual == 4)
+        if(atual == 3)
         {
           atual = 0;
           svSwitchSuperstate(enFechaConexao);

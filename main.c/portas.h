@@ -6,8 +6,8 @@
 #include <ESP32PWM.h>
 
 typedef enum{
-  enPorta_Nenhuma = 0,
-  enPorta_1,
+  enPorta_Nenhuma = 6,
+  enPorta_1 = 0,
   enPorta_2,
   enPorta_3,
   
@@ -38,6 +38,8 @@ extern STRUCT_CTL_PORTAS stPortas;
 
 /* Deixa a porta *porta* *abertura* aberta. */
 bool bPORTA_SetaAbertura(enPorta porta, enAberturaPorta abertura);
+
+enAberturaPorta getAberturaPorta(enPorta porta);
 
 void vPORTA_Init();
 

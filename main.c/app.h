@@ -6,6 +6,7 @@
 #include "medicao.h"
 #include "gendefs.h"
 #include "portas.h"
+#include "proximidade.h"
 
 /* Defines */
 #define MARGEM_BAIXA  0.75
