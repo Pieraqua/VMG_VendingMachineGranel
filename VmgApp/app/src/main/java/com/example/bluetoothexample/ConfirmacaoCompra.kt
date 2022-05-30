@@ -1,10 +1,13 @@
 package com.example.bluetoothexample
 
+import android.content.ContentValues
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
+import java.io.IOException
 
 class ConfirmacaoCompra : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,6 +30,9 @@ class ConfirmacaoCompra : AppCompatActivity() {
 
         bConfirmarCompra.setOnClickListener{
             /* Enviar info para a VMG e esperar o ACK */
+            if(TelaConexao.bluetoothClient.mmSocket != null) {
+                TelaConexao.bluetoothClient.write("Abobrinha".toByteArray())
+            }
 
             /* Tela de "Processo em andamento"? */
 

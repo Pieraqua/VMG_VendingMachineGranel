@@ -12,7 +12,7 @@ STRUCT_CONN stConn =
 
 void vCONN_Init()
 {
-  SerialBT.begin("VMGaGranel", true);
+  SerialBT.begin("VMGaGranel");
   Serial.println("Bluetooth iniciado. ID: VMGaGranel");
 }
 

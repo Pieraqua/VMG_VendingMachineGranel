@@ -55,6 +55,8 @@ void loop() {
     //vAPP_Poll();
     //vPORTA_Poll();
     vCONN_Poll();
+
+    delay(500);
     
   }
 
