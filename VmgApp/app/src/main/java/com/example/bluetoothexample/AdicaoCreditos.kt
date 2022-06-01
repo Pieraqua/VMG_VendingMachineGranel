@@ -49,9 +49,10 @@ class AdicaoCreditos : AppCompatActivity() {
     }
 
     private fun adicionarCreditos() {
-        val codigoPromocional = findViewById<EditText>(R.id.inputCreditos).text
+        val codigoPromocional = findViewById<EditText>(R.id.inputCreditos).text.toString()
 
-
+        if(codigoPromocional == "abcde")
+            TelaConexao.bluetoothClient.sendPacoteCredito(100)
 
     }
 

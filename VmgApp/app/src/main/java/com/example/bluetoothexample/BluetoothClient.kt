@@ -24,6 +24,7 @@ import java.io.OutputStream
 import java.security.Provider
 import java.util.*
 import java.util.logging.Handler
+import kotlin.math.exp
 
 
 class BluetoothClient(
@@ -39,7 +40,22 @@ class BluetoothClient(
 
     fun sendPedido()
     {
-        bluetoothThread().sendPedido("pedido".toByteArray())
+        bluetoothThread().sendPedido()
+    }
+
+    fun sendAck()
+    {
+        bluetoothThread().sendAck()
+    }
+
+    fun sendAckRequest()
+    {
+        bluetoothThread().sendAckRequest()
+    }
+
+    fun sendPacoteCredito(dinheiros: Int)
+    {
+        bluetoothThread().sendPacoteCredito(dinheiros)
     }
 
     fun start()
@@ -128,10 +144,109 @@ class BluetoothClient(
             sleep(5000)
             write("ping".toByteArray())
         }
-
-        fun sendPedido(bytes : ByteArray)
+        private fun criaPacoteCredito(dinheiros : Int) : ByteArray
         {
-            write(bytes)
+            var pacote = ByteArray(7)
+
+            pacote[0] = 0x01;
+            pacote[1] = dinheiros.toByte();
+            /* Implementar usuários */
+            pacote[2] = 0x00;
+            pacote[3] = 0x00;
+            pacote[4] = 0x00;
+            pacote[5] = 0x00;
+
+            var checksum = 0;
+
+            for(x in pacote)
+            {
+                checksum += x;
+            }
+
+            pacote[6] = (checksum%256).toByte();
+
+            return pacote
+        }
+
+        private fun criaPacotePedido() :ByteArray
+        {
+            var pacote = ByteArray(8)
+            var peso = 0
+            var checksum = 2
+
+            pacote[0] = 0x02
+            var i = 1
+
+            for(x in 0..2) {
+                peso = SelecaoProdutos.listaDeProdutos[x].peso
+                pacote[i++] = (peso / 256).toByte()
+                pacote[i++] = (peso).toByte()
+                checksum += peso
+            }
+
+            pacote[i] = (checksum%256).toByte()
+
+            return pacote
+        }
+
+        private fun criaAck() : ByteArray
+        {
+            var pacote = ByteArray(6)
+            var checksum = 0
+            pacote[0] = 0x03
+
+            pacote[1] = 0x01
+            pacote[2] = 0x23
+            pacote[3] = 0x45
+            pacote[4] = 0x67
+
+            for (x in pacote){
+                checksum += x
+            }
+
+            pacote[5] = checksum.toByte()
+
+            return pacote
+        }
+
+        private fun criaAckRequest() : ByteArray
+        {
+            var pacote = ByteArray(6)
+
+            pacote[0] = 0x04
+            pacote[1] = 0x76
+            pacote[2] = 0x54
+            pacote[3] = 0x32
+            pacote[4] = 0x10
+
+            var checksum = 0
+
+            for(x in pacote)
+            {
+                checksum += x
+            }
+
+            return pacote
+        }
+
+        fun sendPedido()
+        {
+            write(criaPacotePedido())
+        }
+
+        fun sendAck()
+        {
+            write(criaAck())
+        }
+
+        fun sendPacoteCredito(dinheiros: Int)
+        {
+            write(criaPacoteCredito(dinheiros))
+        }
+
+        fun sendAckRequest()
+        {
+            write(criaAckRequest())
         }
 
         fun write(bytes: ByteArray)
