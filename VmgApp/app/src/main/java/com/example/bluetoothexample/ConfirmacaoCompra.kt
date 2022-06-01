@@ -1,17 +1,26 @@
 package com.example.bluetoothexample
 
-import android.content.ContentValues
+import android.Manifest
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothManager
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.TextView
-import java.io.IOException
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 
 class ConfirmacaoCompra : AppCompatActivity() {
+    val bcontext = this
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+
         setContentView(R.layout.activity_confirmacao_compra)
 
         val tvAmendoimConfirmacao: TextView = findViewById<TextView>(R.id.tvItem1Confirmacao)
@@ -24,38 +33,57 @@ class ConfirmacaoCompra : AppCompatActivity() {
         tvAmendoimConfirmacao.text = getString(R.string.valorTotalAmendoim).format(SelecaoProdutos.listaDeProdutos[0].peso)
         tvAmendoimConfirmacao.text = getString(R.string.valorTotalCastanhaCaju).format(SelecaoProdutos.listaDeProdutos[1].peso)
         tvAmendoimConfirmacao.text = getString(R.string.valorTotalCastanhaPara).format(SelecaoProdutos.listaDeProdutos[2].peso)
-
+        val tvAvisoPeso: TextView = findViewById<TextView>(R.id.tvAvisoPeso)
         configText()
         configButtons()
 
         bConfirmarCompra.setOnClickListener{
             /* Enviar info para a VMG e esperar o ACK */
-            if(TelaConexao.bluetoothClient.mmSocket != null) {
-                TelaConexao.bluetoothClient.write("Abobrinha".toByteArray())
+            if(!SelecaoProdutos.modoMisto || SelecaoProdutos.modoMisto &&
+                SelecaoProdutos.listaDeProdutos[0].peso +
+                SelecaoProdutos.listaDeProdutos[1].peso +
+                SelecaoProdutos.listaDeProdutos[2].peso < 900 && TelaConexao.bluetoothClient.getConnected()
+            ) {
+                /* Enviar info para a VMG e esperar o ACK */
+                TelaConexao.bluetoothClient.sendPedido()
+
+                /* Tela de "Processo em andamento"? */
+
+                /* Voltar para primeira tela */
+
+                //TelaConexao.bluetoothClient.disconnect()
+                val intent = Intent(this@ConfirmacaoCompra, TelaConexao::class.java)
+
+                startActivity(intent)
+            }
+            else{
+                /* TODO: Aviso quanto ao peso máximo */
+                tvAvisoPeso.text = "Peso maximo excedido para entrega mista!"
             }
 
-            /* Tela de "Processo em andamento"? */
-
-
-            /* Voltar para primeira tela */
-            val intent = Intent(this@ConfirmacaoCompra, TelaConexao::class.java)
-
-            startActivity(intent)
         }
 
         bCancelarCompra.setOnClickListener{
             /* Limpar todas as informações */
 
-
             /* Voltar para primeira tela */
+
             val intent = Intent(this@ConfirmacaoCompra, TelaConexao::class.java)
 
             startActivity(intent)
         }
     }
 
+    fun write()
+    {
+        if(TelaConexao.bluetoothClient.mmSocket != null) {
+            TelaConexao.bluetoothClient.mmSocket!!.outputStream.write("Abobrinha".toByteArray())
+        }
+    }
+
     override fun onResume() {
         super.onResume()
+
         setContentView(R.layout.activity_confirmacao_compra)
 
         val tvAmendoimConfirmacao: TextView = findViewById<TextView>(R.id.tvItem1Confirmacao)
@@ -78,27 +106,35 @@ class ConfirmacaoCompra : AppCompatActivity() {
             if(!SelecaoProdutos.modoMisto || SelecaoProdutos.modoMisto &&
                     SelecaoProdutos.listaDeProdutos[0].peso +
                     SelecaoProdutos.listaDeProdutos[1].peso +
-                    SelecaoProdutos.listaDeProdutos[2].peso < 900
+                    SelecaoProdutos.listaDeProdutos[2].peso < 900 &&
+                TelaConexao.bluetoothClient.getConnected()
                     ) {
                 /* Enviar info para a VMG e esperar o ACK */
+                TelaConexao.bluetoothClient.sendPedido()
 
                 /* Tela de "Processo em andamento"? */
 
-
                 /* Voltar para primeira tela */
-                val intent = Intent(this@ConfirmacaoCompra, TelaConexao::class.java)
+                    val intent = Intent(this@ConfirmacaoCompra, TelaConexao::class.java)
 
-                startActivity(intent)
+                    startActivity(intent)
+
             }
             else{
-                /* TODO: Aviso quanto ao peso máximo */
-                tvAvisoPeso.text = "Peso maximo excedido para entrega mista!"
+                if(TelaConexao.bluetoothClient.getConnected() == false) {
+                    tvAvisoPeso.text = "Não conectado!"
+
+                }
+                else {
+                    /* TODO: Aviso quanto ao peso máximo */
+                    tvAvisoPeso.text = "Peso maximo excedido para entrega mista!"
+                }
             }
         }
 
         bCancelarCompra.setOnClickListener{
             /* Limpar todas as informações */
-
+            TelaConexao.bluetoothClient.cancel()
 
             /* Voltar para primeira tela */
             val intent = Intent(this@ConfirmacaoCompra, TelaConexao::class.java)

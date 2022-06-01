@@ -36,7 +36,7 @@ void vCONN_DescartaMensagem(STRUCT_CONN* struct_conn)
 /* Trata dos pacotes recebidos pela comunicação bluetooth */
 void vCONN_Poll()
 {
-  if (SerialBT.available()) {
+  while (SerialBT.available()) {
     int msg = SerialBT.read();
     Serial.println(msg);
   }

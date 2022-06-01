@@ -26,10 +26,21 @@ import java.util.*
 import java.util.logging.Handler
 
 
-class BluetoothClient() {
-    var mmBuffer: ByteArray? = null//= ByteArray(1024) // mmBuffer store for the stream
-    var mmSocket : BluetoothSocket? = null
-    var adapter : BluetoothAdapter? = null
+class BluetoothClient(
+    adapter: BluetoothAdapter?,
+    mmSocket: BluetoothSocket?,
+    mmBuffer: ByteArray?
+) {
+    var mmBuffer: ByteArray? = mmBuffer//= ByteArray(1024) // mmBuffer store for the stream
+    var mmSocket : BluetoothSocket? = mmSocket
+    var adapter : BluetoothAdapter? = adapter
+    var paired = false
+    var sent = false
+
+    fun sendPedido()
+    {
+        bluetoothThread().sendPedido("pedido".toByteArray())
+    }
 
     fun start()
     {
@@ -43,16 +54,16 @@ class BluetoothClient() {
 
     fun write(bytes : ByteArray)
     {
-        try {
-            mmSocket!!.outputStream.write(bytes)
-        } catch (e: IOException) {
-            Log.e(ContentValues.TAG, "Error occurred when sending data", e)
-        }
+        bluetoothThread().write(bytes)
+    }
+    fun getConnected() : Boolean
+    {
+        return bluetoothThread().connected
     }
 
     private inner class bluetoothThread() : Thread()
     {
-        var paired = false
+
         var connected = false
         var deviceVMG : BluetoothDevice? = null
 
@@ -62,59 +73,92 @@ class BluetoothClient() {
             /* Pega um adapter */
             super.run()
 
-            while(adapter == null)
-            {
-                sleep(500)
-            }
-            /* Enquanto não estiver pareado, */
-            while(!paired || !connected ) {
-                val pairedDevices: Set<BluetoothDevice>? = adapter?.bondedDevices
-                pairedDevices?.forEach { device ->
-                    val deviceName = device.name
-                    val deviceHardwareAddress = device.address // MAC address
+            if (adapter == null)
+                return
 
-                    if (deviceName == "VMGaGranel") {
-                        paired = true
-                        deviceVMG = device
-                    }
+            while(true){
+                /* Enquanto não estiver pareado, */
+                while (!connected) {
+                    while (!paired) {
+                        val pairedDevices: Set<BluetoothDevice>? = adapter?.bondedDevices
+                        pairedDevices?.forEach { device ->
+                            val deviceName = device.name
+                            val deviceHardwareAddress = device.address // MAC address
+
+                            if (deviceName == "VMGaGranel") {
+                                paired = true
+                                deviceVMG = device
+                            }
 
 
-                    if(!paired)
-                    {
-                        sleep(500)
-                    }
-
-                    try {
-                        mmSocket = deviceVMG!!.createInsecureRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"))
-                        mmSocket?.let { socket ->
-                            // Connect to the remote device through the socket. This call blocks
-                            // until it succeeds or throws an exception.
-                            sleep(500)
-                            socket.connect()
-                            connected = true
-                            TelaConexao.conectado = true
-
-                            // The connection attempt succeeded. Perform work associated with
-                            // the connection.
-                            mmBuffer = ByteArray(1024) // mmBuffer store for the stream
-
+                            if (!paired) {
+                                sleep(500)
+                            }
                         }
 
-                    }
-                    catch (e: IOException) {
                         try {
-                            mmSocket!!.close()
-                        } catch (e2: IOException) {
+                            mmSocket =
+                                deviceVMG!!.createInsecureRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"))
+                            mmSocket?.let { socket ->
+                                // Connect to the remote device through the socket. This call blocks
+                                // until it succeeds or throws an exception.
+                                sleep(500)
+                                socket.connect()
+                                connected = true
+                                TelaConexao.conectado = true
 
+                                // The connection attempt succeeded. Perform work associated with
+                                // the connection.
+                                mmBuffer = ByteArray(1024) // mmBuffer store for the stream
+
+                            }
+
+                        } catch (e: IOException) {
+                            try {
+                                mmSocket!!.close()
+                                paired = false
+                                connected = false
+                            } catch (e2: IOException) {
+
+                            }
                         }
                     }
                 }
             }
+            sleep(5000)
+            write("ping".toByteArray())
         }
+
+        fun sendPedido(bytes : ByteArray)
+        {
+            write(bytes)
+        }
+
+        fun write(bytes: ByteArray)
+        {
+            if(mmSocket != null && mmSocket!!.outputStream != null) {
+                try {
+                    mmSocket!!.outputStream.write(bytes)
+                    sent = true
+                } catch (e: IOException) {
+                    Log.e(ContentValues.TAG, "Error occurred when sending data", e)
+                    mmSocket!!.close()
+                    paired = false
+                    connected = false
+                }
+            }
+            else
+            {
+                paired = false
+                connected = false
+            }
+        }
+
 
         // Closes the client socket and causes the thread to finish.
         fun cancel() {
             try {
+                paired = false
                 connected = false
                 TelaConexao.conectado = false
                 mmSocket?.close()
