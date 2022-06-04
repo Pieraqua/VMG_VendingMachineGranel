@@ -7,7 +7,8 @@
 STRUCT_CONN stConn = 
 {
   .msgAvailable = FALSE,
-  .conectado = 0
+  .conectado = FALSE,
+  .receivingMsg = FALSE
 };
 
 void vCONN_Init()
@@ -40,14 +41,23 @@ void vCONN_Poll()
   while (SerialBT.available() && !stConn.msgAvailable) {
     char msg = (char)SerialBT.read();
     Serial.println(msg);
-    uint8_t current = stConn.stMsg.current;
-    stConn.stMsg.payload[current++] = (uint8_t)msg;
-    stConn.stMsg.current++;
-    if(current > 4){
-      //Finalizador de mensagem
-      if(stConn.stMsg.payload[current-4] == 0xFF && stConn.stMsg.payload[current-3] == 0xFF && stConn.stMsg.payload[current-2] == 0xFF && stConn.stMsg.payload[current-1] == 0xFF)
-      {
-        stConn.msgAvailable = 1;
+
+    if(!stConn.msgAvaiable){
+      uint8_t current = stConn.stMsg.current;
+      stConn.stMsg.payload[current++] = (uint8_t)msg;
+      stConn.stMsg.current++;
+      if(current > 4){
+        //Finalizador de mensagem
+        if(stConn.stMsg.payload[current-4] == 0x12 && stConn.stMsg.payload[current-3] == x034 && stConn.stMsg.payload[current-2] == 0x12 && stConn.stMsg.payload[current-1] == 0x34)
+        {
+          Conn.stMsg.current = 0;
+          stConn.recebendoMsg = 1;
+        }
+        if(stConn.stMsg.payload[current-4] == 0xFF && stConn.stMsg.payload[current-3] == 0xFF && stConn.stMsg.payload[current-2] == 0xFF && stConn.stMsg.payload[current-1] == 0xFF)
+        {
+          stConn.msgAvailable = 1;
+          stConn.receivingMsg = 0;
+        }
       }
     }
   }

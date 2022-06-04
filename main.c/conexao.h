@@ -28,6 +28,7 @@ typedef struct
 {
   uint8_t msgAvailable;
   uint8_t conectado;
+  uint8_t receivingMsg;
   STRUCT_MSG stMsg;
 }STRUCT_CONN;
 
