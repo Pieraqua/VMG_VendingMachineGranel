@@ -21,10 +21,12 @@ void vAPP_Poll()
   switch(stAPP.superestado)
   {
     case enEsperaConexao:
-        #ifdef __DEBUG_APP
-        Serial.println("APP: Estado enEsperaConexao");
-        #endif
-
+      if(stAPP.subestado == 0){
+          #ifdef __DEBUG_APP
+          Serial.println("APP: Estado enEsperaConexao");
+          #endif
+          stAPP.subestado = 1;
+      }
         /* Tratamento estado enEsperaConexao */
         
         /* Caso tenha uma mensagem disponível no bluetooth, */
@@ -54,10 +56,12 @@ void vAPP_Poll()
     break;
 
     case enAdicionandoCreditos:
+        if(stAPP.subestado == 0){
         #ifdef __DEBUG_APP
         Serial.println("APP: Estado enAdicionandoCreditos");
         #endif
-
+        stAPP.subestado = 1;
+        }
         /* Envia pedido de adição de créditos ao banco de dados */
         bCONN_SendUserCredit(&stConn.stMsg);
         vCONN_DescartaMensagem(&stConn);
@@ -66,9 +70,12 @@ void vAPP_Poll()
     break;
 
     case enLendoDados:
+      if(stAPP.subestado == 0){
         #ifdef __DEBUG_APP
         Serial.println("APP: Estado enLendoDados");
         #endif
+        stAPP.subestado = 1;
+      }
 
         vCONN_LeituraPesos((uint16_t*)&(stAPP.pesos));
 
@@ -77,9 +84,12 @@ void vAPP_Poll()
     break;
 
     case enAguardandoRecipiente:
+        if(stAPP.subestado == 0){
         #ifdef __DEBUG_APP
         Serial.println("APP: Estado enAguardandoRecipiente");
         #endif
+        stAPP.subestado = 1;
+        }
 
         /* Se detectar um recipiente volta a entregar o produto */
         if(bPROX_DetectaEmbalagem())
@@ -94,9 +104,12 @@ void vAPP_Poll()
     break;
 
     case enEntregandoProduto:
+        if(stAPP.subestado == 0){
         #ifdef __DEBUG_APP
         Serial.println("APP: Estado enEntregandoProduto");
         #endif
+        stAPP.subestado = 1;
+        }
         static uint8_t atual = 0;
 
         /* Se não detectar um recipiente */
@@ -170,9 +183,12 @@ void vAPP_Poll()
     break;
 
     case enFechaConexao:
+        if(stAPP.subestado == 0){
         #ifdef __DEBUG_APP
         Serial.println("APP: Estado enFechaConexao");
         #endif
+        stAPP.subestado = 1;
+        }
         /* Tratamento estado enFechaConexao */
 
         vCONN_FechaConexao();
@@ -180,12 +196,13 @@ void vAPP_Poll()
     break;
 
     case enErro:
+        if(stAPP.subestado == 0){
         #ifdef __DEBUG_APP
         Serial.println("APP: Estado enErro");
         #endif
-
+        stAPP.subestado = 1;
+        }
         /* Tratamento estado enErro */
-        delay(1000);
         svSwitchSuperstate(enEsperaConexao);
     break;
 
@@ -247,6 +264,7 @@ static void svSwitchSuperstate(enVMGStates estadoDesejado)
 {
   stAPP.ultimo_estado = stAPP.superestado;
   stAPP.superestado = estadoDesejado;
+  stAPP.subestado = 0;
 }
 
 static void svAdicionaCreditos(STRUCT_MSG msg)

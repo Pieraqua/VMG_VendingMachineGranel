@@ -19,6 +19,7 @@ typedef enum
 typedef struct
 {
   enTipoMensagem type;
+  uint8_t current;
   uint8_t payload[50];
 }STRUCT_MSG;
 

@@ -20,6 +20,8 @@
         <entry key="..\:/Users/guigu/StudioProjects/VMG_VendingMachineGranel/VmgApp/app/src/main/res/layout/activity_confirmacao_compra.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_confirmacao_compra.xml" value="0.17753623188405798" />
         <entry key="app/src/main/res/layout/activity_selecao_produtos.xml" value="0.17753623188405798" />
+        <entry key="app/src/main/res/layout/activity_tela_conexao.xml" value="0.17753623188405798" />
+        <entry key="app/src/main/res/layout/lista_produtos_item.xml" value="0.1" />
       </map>
     </option>
   </component>

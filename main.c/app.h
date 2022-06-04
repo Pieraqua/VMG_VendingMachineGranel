@@ -40,6 +40,7 @@ typedef enum
 typedef struct
 {
   enVMGStates superestado;
+  uint8_t subestado;
   enVMGStates ultimo_estado;
   enVMGError erro;
   uint16_t pesos[3];
