@@ -36,7 +36,7 @@ void vCONN_DescartaMensagem(STRUCT_CONN* struct_conn)
 
 static int hexToInt(uint8_t* bytes, uint8_t tamanho)
 {
-  int i, result;
+  int i, result = 0;
   for(i = 0; i < tamanho; i++)
   {
     //if(bytes[i] >= '0' && bytes[i] <= '9')
@@ -45,7 +45,7 @@ static int hexToInt(uint8_t* bytes, uint8_t tamanho)
     //  result += (bytes[i] - 'A' + 9)*16^(tamanho - i);
     //else if(bytes[i] >= 'a' && bytes[i] <= 'f')
     //  result += (bytes[i] - 'a' + 9)*16^(tamanho - i);
-    result += (bytes[i])*16^(tamanho - i);
+    result += (bytes[i]<<(8*(tamanho - 1 - i)));
   }
   return result;
 }
@@ -66,19 +66,30 @@ void vCONN_Poll()
       uint8_t current = stConn.stMsg.current;
       stConn.stMsg.payload[current++] = (uint8_t)msg;
       stConn.stMsg.current++;
-      if(current >= 3){
+      if(current >= 4){
         //Finalizador de mensagem
-        if(stConn.stMsg.payload[current-3] == 18 && stConn.stMsg.payload[current-2] == 52 && stConn.stMsg.payload[current-1] == 18 && stConn.stMsg.payload[current] == 52)
+        if(stConn.stMsg.payload[current-4] == 18 && stConn.stMsg.payload[current-3] == 52 && stConn.stMsg.payload[current-2] == 18 && stConn.stMsg.payload[current-1] == 52)
         {
           stConn.stMsg.current = 0;
           stConn.receivingMsg = 1;
         }
-        if(stConn.stMsg.payload[current-3] == 255 && stConn.stMsg.payload[current-2] == 255 && stConn.stMsg.payload[current-1] == 255 && stConn.stMsg.payload[current] == 255)
+        if(stConn.stMsg.payload[current-4] == 255 && stConn.stMsg.payload[current-3] == 255 && stConn.stMsg.payload[current-2] == 255 && stConn.stMsg.payload[current-1] == 255)
         {
           stConn.msgAvailable = 1;
           stConn.receivingMsg = 0;
         }
       }
+      if(current >= 4){
+        Serial.print(stConn.stMsg.payload[current-4]);Serial.print(stConn.stMsg.payload[current-3]);Serial.print(stConn.stMsg.payload[current-2]);Serial.print(stConn.stMsg.payload[current-1]);
+        Serial.println("");
+      }
+      uint8_t i = 0;
+      for(i = 0; i < current; i++)
+      {
+        Serial.print(stConn.stMsg.payload[i]);
+      }
+      Serial.println(".");
+      
     }
   }
 
@@ -95,12 +106,18 @@ void vCONN_Poll()
       Serial.println("Ackreq received");
     }
 
-    if(stConn.stMsg.payload[0] == 2){
+    if(stConn.stMsg.payload[0] == 2 && stAPP.superestado == enEsperaConexao){
       //Pedido
       Serial.println("Pedido recebido");
-      Serial.print("Pesos:"); Serial.print(hexToInt(&stConn.stMsg.payload[1], 2));Serial.print(hexToInt(&stConn.stMsg.payload[3], 2));Serial.print(hexToInt(&stConn.stMsg.payload[5], 2));
+      Serial.println("Pesos:"); Serial.println(hexToInt(&stConn.stMsg.payload[1], 2));Serial.println(hexToInt(&stConn.stMsg.payload[3], 2));Serial.println(hexToInt(&stConn.stMsg.payload[5], 2));
       Serial.println("Checksum:");
-      Serial.print(stConn.stMsg.payload[7]);
+      Serial.println(stConn.stMsg.payload[7]);
+
+      stAPP.recebeuPesos = true;
+
+      stAPP.pesos[0] = hexToInt(&stConn.stMsg.payload[1], 2);
+      stAPP.pesos[1] = hexToInt(&stConn.stMsg.payload[3], 2);
+      stAPP.pesos[2] = hexToInt(&stConn.stMsg.payload[5], 2);
     }
     if(stConn.stMsg.payload[0] == 5){
       //Credito

@@ -52,8 +52,8 @@ void loop() {
     #ifdef __DEBUG_MAIN
     Serial.println("Loop main!");
     #endif
-    //vAPP_Poll();
-    //vPORTA_Poll();
+    vAPP_Poll();
+    vPORTA_Poll();
     vCONN_Poll();
 
     delay(500);

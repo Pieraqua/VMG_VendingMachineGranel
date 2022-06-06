@@ -43,7 +43,10 @@ typedef struct
   uint8_t subestado;
   enVMGStates ultimo_estado;
   enVMGError erro;
+  bool recebeuPesos;
   uint16_t pesos[3];
+  //
+  //
 }STRUCT_APP;
 
 /* Funcao de polling da StateMachine */

@@ -4,7 +4,8 @@ STRUCT_APP stAPP =
 {
   .superestado = enEsperaConexao,
   .ultimo_estado = enEsperaConexao,
-  .erro = enErroNenhum
+  .erro = enErroNenhum,
+  .recebeuPesos = false
 };
 
 void vAPP_Init()
@@ -28,31 +29,11 @@ void vAPP_Poll()
           stAPP.subestado = 1;
       }
         /* Tratamento estado enEsperaConexao */
-        
-        /* Caso tenha uma mensagem disponível no bluetooth, */
-        if(stConn.msgAvailable)
-        {
-          /* e a mensagem seja uma requisicao de venda de produtos, */
-          if(stConn.stMsg.type == enMensagemVendaProdutos)
-          {
-            /* Vai para o estado LendoDados e impede novas conexões */
-            stConn.conectado = TRUE;
-            svSwitchSuperstate(enLendoDados);
-          }
-          /* e a mensagem seja uma requisicao de adicao de creditos, */
-          else if (stConn.stMsg.type == enMensagemAdicaoCreditos)
-          {
-            /* Adiciona créditos ao usuário */
-            stConn.conectado = TRUE;
-            svSwitchSuperstate(enAdicionandoCreditos);
-          }
-          /* Caso nao seja um pacote valido, descarta a mensagem. */
-          else vCONN_DescartaMensagem(&stConn);
-          
+
+        if(stAPP.recebeuPesos){
+          stConn.conectado = TRUE;
+          svSwitchSuperstate(enLendoDados);
         }
-        
-        svSwitchSuperstate(enLendoDados);
-        
     break;
 
     case enAdicionandoCreditos:
@@ -69,6 +50,7 @@ void vAPP_Poll()
         svSwitchSuperstate(enEsperaConexao);
     break;
 
+    //Tratamento direto em conexao.ino; se der tempo mudar pra uma funcao especializada e tratar as mensagens de um jeito melhor
     case enLendoDados:
       if(stAPP.subestado == 0){
         #ifdef __DEBUG_APP
@@ -77,7 +59,7 @@ void vAPP_Poll()
         stAPP.subestado = 1;
       }
 
-        vCONN_LeituraPesos((uint16_t*)&(stAPP.pesos));
+        //vCONN_LeituraPesos((uint16_t*)&(stAPP.pesos));
 
         /* Tratamento estado enLendoDados */
         svSwitchSuperstate(enEntregandoProduto);
@@ -190,8 +172,9 @@ void vAPP_Poll()
         stAPP.subestado = 1;
         }
         /* Tratamento estado enFechaConexao */
-
+        stAPP.recebeuPesos = false;
         vCONN_FechaConexao();
+        svSwitchSuperstate(enEsperaConexao);
         
     break;
 

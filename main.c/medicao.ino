@@ -6,7 +6,7 @@ void vMED_Init()
 }
 
 /* Mede o peso da balança da caixa peso e retorna o peso */
-uint16_t ui16MED_LeituraPeso(uint8_t peso)
+uint16_t ui16MED_LeituraPeso(uint8_t caixa)
 {
-  return 0;
+  return 999;
 }

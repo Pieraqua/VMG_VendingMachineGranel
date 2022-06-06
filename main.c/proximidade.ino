@@ -7,6 +7,8 @@ void vPROX_Init()
 
 bool bPROX_DetectaEmbalagem()
 {
+  #warning TESTE
+  return true;
 
   if(digitalRead(SENSOR1))
   {
