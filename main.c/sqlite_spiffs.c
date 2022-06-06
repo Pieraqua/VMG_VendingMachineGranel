@@ -109,19 +109,25 @@ void setup() {
        return;
    }
 
-   rc = db_exec(db1, "INSERT INTO produto VALUES (1, 'Castanha_de_Caju', 'Castanha_do_Para', 'Amendoim');");
+   rc = db_exec(db1, "INSERT INTO produto VALUES (1, 'Castanha_de_Caju', 80, 2, 30, '10/3');");
    if (rc != SQLITE_OK) {
        sqlite3_close(db1);
        return;
    }
 
-   rc = db_exec(db1, "INSERT INTO produto VALUES (2, 80, 80, 2);");
+   rc = db_exec(db1, "INSERT INTO produto VALUES (2, 'Castanha_do_Para', 80, 1.5, 30, '10/3');");
    if (rc != SQLITE_OK) {
        sqlite3_close(db1);
        return;
    }
 
-   rc = db_exec(db1, "SELECT * FROM test1");
+   rc = db_exec(db1, "INSERT INTO produto VALUES (3, 'Amendoim', 30, 2, 30, '10/3');");
+   if (rc != SQLITE_OK) {
+       sqlite3_close(db1);
+       return;
+   }
+
+   rc = db_exec(db1, "SELECT * FROM usuario");
    if (rc != SQLITE_OK) {
        sqlite3_close(db1);
        return;
