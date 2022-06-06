@@ -119,8 +119,13 @@ void vCONN_Poll()
       stAPP.pesos[1] = hexToInt(&stConn.stMsg.payload[3], 2);
       stAPP.pesos[2] = hexToInt(&stConn.stMsg.payload[5], 2);
     }
-    if(stConn.stMsg.payload[0] == 5){
+    if(stConn.stMsg.payload[0] == 5 && stAPP.superestado == enEsperaConexao){
       //Credito
+      uint8_t credito = stConn.stMsg.payload[1];
+      uint32_t cliente_id = hexToInt(&stConn.stMsg.payload[2], 4);
+
+      Serial.print("Credito: "); Serial.println(credito);
+      Serial.print("ID Cliente: "); Serial.println(cliente_id);
       
     }
 

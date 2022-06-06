@@ -156,10 +156,10 @@ class BluetoothClient(
             pacote[4] = 0x01;
             pacote[5] = dinheiros.toByte();
             /* Implementar usuários */
-            pacote[6] = 0x00;
-            pacote[7] = 0x00;
-            pacote[8] = 0x00;
-            pacote[9] = 0x00;
+            pacote[6] = 0x11;
+            pacote[7] = 0x11;
+            pacote[8] = 0x11;
+            pacote[9] = 0x11;
 
             var checksum = 0;
 
