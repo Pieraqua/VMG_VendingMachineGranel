@@ -34,26 +34,46 @@ void vCONN_DescartaMensagem(STRUCT_CONN* struct_conn)
   struct_conn->stMsg.current = 0;
 }
 
+static int hexToInt(uint8_t* bytes, uint8_t tamanho)
+{
+  int i, result;
+  for(i = 0; i < tamanho; i++)
+  {
+    //if(bytes[i] >= '0' && bytes[i] <= '9')
+    //  result += (bytes[i] - '0')*16^(tamanho - i);
+    //else if(bytes[i] >= 'A' && bytes[i] <= 'F')
+    //  result += (bytes[i] - 'A' + 9)*16^(tamanho - i);
+    //else if(bytes[i] >= 'a' && bytes[i] <= 'f')
+    //  result += (bytes[i] - 'a' + 9)*16^(tamanho - i);
+    result += (bytes[i])*16^(tamanho - i);
+  }
+  return result;
+}
+
 /* Trata dos pacotes recebidos pela comunicação bluetooth */
 void vCONN_Poll()
 {
   //Recebe mensagem
   while (SerialBT.available() && !stConn.msgAvailable) {
     char msg = (char)SerialBT.read();
-    Serial.println(msg);
+    Serial.println("Byte recebido");
+    Serial.println((byte)msg);
+    Serial.print("Current: ");
+    Serial.println(stConn.stMsg.current);
+    
 
-    if(!stConn.msgAvaiable){
+    if(!stConn.msgAvailable){
       uint8_t current = stConn.stMsg.current;
       stConn.stMsg.payload[current++] = (uint8_t)msg;
       stConn.stMsg.current++;
-      if(current > 4){
+      if(current >= 3){
         //Finalizador de mensagem
-        if(stConn.stMsg.payload[current-4] == 0x12 && stConn.stMsg.payload[current-3] == x034 && stConn.stMsg.payload[current-2] == 0x12 && stConn.stMsg.payload[current-1] == 0x34)
+        if(stConn.stMsg.payload[current-3] == 18 && stConn.stMsg.payload[current-2] == 52 && stConn.stMsg.payload[current-1] == 18 && stConn.stMsg.payload[current] == 52)
         {
-          Conn.stMsg.current = 0;
-          stConn.recebendoMsg = 1;
+          stConn.stMsg.current = 0;
+          stConn.receivingMsg = 1;
         }
-        if(stConn.stMsg.payload[current-4] == 0xFF && stConn.stMsg.payload[current-3] == 0xFF && stConn.stMsg.payload[current-2] == 0xFF && stConn.stMsg.payload[current-1] == 0xFF)
+        if(stConn.stMsg.payload[current-3] == 255 && stConn.stMsg.payload[current-2] == 255 && stConn.stMsg.payload[current-1] == 255 && stConn.stMsg.payload[current] == 255)
         {
           stConn.msgAvailable = 1;
           stConn.receivingMsg = 0;
@@ -61,6 +81,36 @@ void vCONN_Poll()
       }
     }
   }
+
+  /* Tratamento de mensagens */
+  if(stConn.msgAvailable)
+  {
+    //ACK
+    if(stConn.stMsg.payload[0] == 3){
+      Serial.println("Ack received");
+    }
+
+    //ACKREQ
+    if(stConn.stMsg.payload[0] == 4){
+      Serial.println("Ackreq received");
+    }
+
+    if(stConn.stMsg.payload[0] == 2){
+      //Pedido
+      Serial.println("Pedido recebido");
+      Serial.print("Pesos:"); Serial.print(hexToInt(&stConn.stMsg.payload[1], 2));Serial.print(hexToInt(&stConn.stMsg.payload[3], 2));Serial.print(hexToInt(&stConn.stMsg.payload[5], 2));
+      Serial.println("Checksum:");
+      Serial.print(stConn.stMsg.payload[7]);
+    }
+    if(stConn.stMsg.payload[0] == 5){
+      //Credito
+      
+    }
+
+    stConn.stMsg.current = 0;
+    stConn.msgAvailable = 0;
+  }
+  
   //Se ja tem uma mensagem no buffer, ignora as proximas.
   if(SerialBT.available() && stConn.msgAvailable)
   {

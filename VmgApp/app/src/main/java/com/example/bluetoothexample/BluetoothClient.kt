@@ -142,19 +142,24 @@ class BluetoothClient(
                 }
             }
             sleep(5000)
-            write("ping".toByteArray())
+            sendAck()
         }
         private fun criaPacoteCredito(dinheiros : Int) : ByteArray
         {
-            var pacote = ByteArray(7)
+            var pacote = ByteArray(15)
 
-            pacote[0] = 0x01;
-            pacote[1] = dinheiros.toByte();
+            pacote[0] = 0x12.toByte()
+            pacote[1] = 0x34.toByte()
+            pacote[2] = 0x12.toByte()
+            pacote[3] = 0x34.toByte()
+
+            pacote[4] = 0x01;
+            pacote[5] = dinheiros.toByte();
             /* Implementar usuários */
-            pacote[2] = 0x00;
-            pacote[3] = 0x00;
-            pacote[4] = 0x00;
-            pacote[5] = 0x00;
+            pacote[6] = 0x00;
+            pacote[7] = 0x00;
+            pacote[8] = 0x00;
+            pacote[9] = 0x00;
 
             var checksum = 0;
 
@@ -163,19 +168,29 @@ class BluetoothClient(
                 checksum += x;
             }
 
-            pacote[6] = (checksum%256).toByte();
+            pacote[10] = (checksum%256).toByte();
+
+            pacote[11] = 0xFF.toByte()
+            pacote[12] = 0xFF.toByte()
+            pacote[13] = 0xFF.toByte()
+            pacote[14] = 0xFF.toByte()
 
             return pacote
         }
 
         private fun criaPacotePedido() :ByteArray
         {
-            var pacote = ByteArray(8)
+            var pacote = ByteArray(16)
             var peso = 0
             var checksum = 2
 
-            pacote[0] = 0x02
-            var i = 1
+            pacote[0] = 0x12.toByte()
+            pacote[1] = 0x34.toByte()
+            pacote[2] = 0x12.toByte()
+            pacote[3] = 0x34.toByte()
+
+            pacote[4] = 0x02
+            var i = 5
 
             for(x in 0..2) {
                 peso = SelecaoProdutos.listaDeProdutos[x].peso
@@ -184,40 +199,61 @@ class BluetoothClient(
                 checksum += peso
             }
 
-            pacote[i] = (checksum%256).toByte()
+            pacote[i++] = (checksum%256).toByte()
+
+            pacote[i++] = 0xFF.toByte()
+            pacote[i++] = 0xFF.toByte()
+            pacote[i++] = 0xFF.toByte()
+            pacote[i++] = 0xFF.toByte()
 
             return pacote
         }
 
         private fun criaAck() : ByteArray
         {
-            var pacote = ByteArray(6)
+            var pacote = ByteArray(14)
             var checksum = 0
-            pacote[0] = 0x03
 
-            pacote[1] = 0x01
-            pacote[2] = 0x23
-            pacote[3] = 0x45
-            pacote[4] = 0x67
+            pacote[0] = 0x12.toByte()
+            pacote[1] = 0x34.toByte()
+            pacote[2] = 0x12.toByte()
+            pacote[3] = 0x34.toByte()
+
+            pacote[4] = 0x03
+
+            pacote[5] = 0x01
+            pacote[6] = 0x23
+            pacote[7] = 0x45
+            pacote[8] = 0x67
 
             for (x in pacote){
                 checksum += x
             }
 
-            pacote[5] = checksum.toByte()
+            pacote[9] = checksum.toByte()
+
+            pacote[10] = 0xFF.toByte()
+            pacote[11] = 0xFF.toByte()
+            pacote[12] = 0xFF.toByte()
+            pacote[13] = 0xFF.toByte()
 
             return pacote
         }
 
         private fun criaAckRequest() : ByteArray
         {
-            var pacote = ByteArray(6)
+            var pacote = ByteArray(14)
 
-            pacote[0] = 0x04
-            pacote[1] = 0x76
-            pacote[2] = 0x54
-            pacote[3] = 0x32
-            pacote[4] = 0x10
+            pacote[0] = 0x12
+            pacote[1] = 0x34
+            pacote[2] = 0x12
+            pacote[3] = 0x34
+
+            pacote[4] = 0x04
+            pacote[5] = 0x76
+            pacote[6] = 0x54
+            pacote[7] = 0x32
+            pacote[8] = 0x10
 
             var checksum = 0
 
@@ -225,6 +261,14 @@ class BluetoothClient(
             {
                 checksum += x
             }
+
+            pacote[9] = checksum.toByte()
+
+            pacote[10] = 0xFF.toByte()
+            pacote[11] = 0xFF.toByte()
+            pacote[12] = 0xFF.toByte()
+            pacote[13] = 0xFF.toByte()
+
 
             return pacote
         }
