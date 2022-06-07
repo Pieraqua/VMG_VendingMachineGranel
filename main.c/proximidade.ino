@@ -10,7 +10,7 @@ bool bPROX_DetectaEmbalagem()
   #warning TESTE
   return true;
 
-  if(digitalRead(SENSOR1))
+  if(digitalRead(SENSOR1) == HIGH)
   {
     return true;
   }
