@@ -29,14 +29,14 @@ import kotlin.math.exp
 
 class BluetoothClient(
     adapter: BluetoothAdapter?,
-    mmSocket: BluetoothSocket?,
-    mmBuffer: ByteArray?
+    mmSocket: BluetoothSocket?
 ) {
-    var mmBuffer: ByteArray? = mmBuffer//= ByteArray(1024) // mmBuffer store for the stream
+    var mmBuffer: ByteArray? = ByteArray(1024) // mmBuffer store for the stream
     var mmSocket : BluetoothSocket? = mmSocket
     var adapter : BluetoothAdapter? = adapter
     var paired = false
     var sent = false
+    var currentPosBuffer : Int = 0
 
     fun sendPedido()
     {
@@ -92,7 +92,7 @@ class BluetoothClient(
             if (adapter == null)
                 return
 
-            while(true){
+            while(true) {
                 /* Enquanto não estiver pareado, */
                 while (!connected) {
                     while (!paired) {
@@ -114,7 +114,11 @@ class BluetoothClient(
 
                         try {
                             mmSocket =
-                                deviceVMG!!.createInsecureRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"))
+                                deviceVMG!!.createInsecureRfcommSocketToServiceRecord(
+                                    UUID.fromString(
+                                        "00001101-0000-1000-8000-00805F9B34FB"
+                                    )
+                                )
                             mmSocket?.let { socket ->
                                 // Connect to the remote device through the socket. This call blocks
                                 // until it succeeds or throws an exception.
@@ -140,9 +144,15 @@ class BluetoothClient(
                         }
                     }
                 }
+                var numBytes: Int // bytes returned from read()
+                // Keep listening to the InputStream until an exception occurs
+                // Read from the InputStream.
+                var inStream : InputStream = mmSocket!!.inputStream
+                currentPosBuffer += inStream.read(mmBuffer)
+
+                //implementa leitura de pacote recebido da esp32
+                if()
             }
-            sleep(5000)
-            sendAck()
         }
         private fun criaPacoteCredito(dinheiros : Int) : ByteArray
         {

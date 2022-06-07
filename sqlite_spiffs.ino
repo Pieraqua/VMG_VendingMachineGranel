@@ -5,8 +5,9 @@
 */
 #include <stdio.h>
 #include <stdlib.h>
-#include <sqlite3.h>
+#include "sqlite3.h"
 #include <SPI.h>
+
 #include <FS.h>
 #include "SPIFFS.h"
 
@@ -53,7 +54,7 @@ int db_exec(sqlite3 *db, const char *sql) {
    return rc;
 }
 
-void setup() {
+void sqliteInit() {
 
    Serial.begin(115200);
    sqlite3 *db1;
@@ -134,7 +135,4 @@ void setup() {
    }
    sqlite3_close(db1);
 
-}
-
-void loop() {
 }
