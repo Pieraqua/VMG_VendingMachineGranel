@@ -49,6 +49,8 @@ typedef struct
   //
 }STRUCT_APP;
 
+STRUCT_APP stAPP;
+
 /* Funcao de polling da StateMachine */
 void vAPP_Poll(void);
 

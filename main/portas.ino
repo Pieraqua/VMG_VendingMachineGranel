@@ -1,16 +1,15 @@
 #include "portas.h"
 
 
-STRUCT_CTL_PORTAS stPortas = 
-{
-  .portaAtual = enPorta_Nenhuma,
-  .portaAtivada = false,
+STRUCT_CTL_PORTAS stPortas;
   
-};
 
 /* Tem certeza de que todas as portas inicializam fechadas */
 void vPORTA_Init()
 {
+  stPortas.portaAtual = enPorta_Nenhuma;
+  stPortas.portaAtivada = false;
+  
   stPortas.portas[0].aberturaAtual = portaAberta;
   stPortas.portas[1].aberturaAtual = portaAberta;
   stPortas.portas[2].aberturaAtual = portaAberta;
