@@ -1,7 +1,5 @@
 #include "app.h"
 
-STRUCT_APP stAPP;
-
 void vAPP_Init()
 {
   memset(stAPP.pesos, 0, sizeof(uint16_t)*3);
@@ -9,6 +7,7 @@ void vAPP_Init()
   stAPP.ultimo_estado = enEsperaConexao;
   stAPP.erro = enErroNenhum;
   stAPP.recebeuPesos = false;
+  
 }
 
 void vAPP_Poll()
