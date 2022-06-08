@@ -5,7 +5,8 @@ typedef enum
   TesteServos = 0,
   TesteVibra,
   TesteLoop,
-  testePortas
+  testePortas,
+  testePesos
 }estadosTeste;
 
 typedef enum
@@ -58,9 +59,19 @@ void vTESTE_Poll()
           default:
             break;
         }
-        
+
+      case TesteVibra:
+      //vLigaMotor(2);
       default:
 
+      break;
+
+      case testePesos:
+        Serial.print("Caixa 1: "); Serial.println(ui16MED_LeituraPeso(0));
+        //Serial.print("Caixa 2: "); Serial.println(ui16MED_LeituraPeso(1));
+        //Serial.print("Caixa 3: "); Serial.println(ui16MED_LeituraPeso(2));
+        Serial.print("Caixa 4: "); Serial.println(ui16MED_LeituraPeso(3));
+        delay(200);
       break;
 
     

@@ -25,16 +25,11 @@ void IRAM_ATTR SysTickHandler(void)
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
-  vMED_Init();
-  
+  vBALANCA_Init();
   vAPP_Init();
-
   vPORTA_Init();
-
-  //vMOTOR_Init();
-
+  vMOTOR_Init();
   //vPROX_Init();
-
   vCONN_Init();
 
   /* Systick a cada milisegundo */
@@ -52,11 +47,12 @@ void loop() {
     #ifdef __DEBUG_MAIN
     Serial.println("Loop main!");
     #endif
-    vAPP_Poll();
+    //vAPP_Poll();
     vPORTA_Poll();
     vCONN_Poll();
+    //vTESTE_Poll();
 
-    delay(500);
+    //delay(100);
     
   }
 

@@ -1,13 +1,7 @@
 #ifndef __MEDICAO_H
 #define __MEDICAO_H
 
-#include <Wire.h>
-
-#define I2C_SDA1 34
-#define I2C_SDA2 25
-#define I2C_SDA3 26
-#define I2C_SDA4 27
-#define I2C_SCK 13
+#include "balanca.h"
 
 void vMED_Init();
 

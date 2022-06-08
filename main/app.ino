@@ -94,9 +94,12 @@ void vAPP_Poll()
         #ifdef __DEBUG_APP
         Serial.println("APP: Recipiente não detectado");
         #endif
+          vDesligaMotor(atual);
           svSwitchSuperstate(enAguardandoRecipiente);
           break;
         }
+
+        vLigaMotor(atual);
         
         if(ui16MED_LeituraPeso(atual) < stAPP.pesos[atual] - MARGEM_BAIXA*stAPP.pesos[atual])
         {
@@ -147,6 +150,7 @@ void vAPP_Poll()
           }
           
           //Ir para proxima caixa
+          vDesligaMotor(atual);
           atual++;
         }
         
@@ -202,6 +206,11 @@ static void svRegistraErro(enVMGError erro)
   #ifdef __DEBUG_APP
     Serial.print("APP: Erro ");
   #endif
+  vDesligaMotor(0);
+  
+  vDesligaMotor(1);
+  
+  vDesligaMotor(2);
   switch(erro)
   {
     case enErroEstoque:
