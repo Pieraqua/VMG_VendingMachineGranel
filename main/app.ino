@@ -44,7 +44,7 @@ void vAPP_Poll()
         stAPP.subestado = 1;
         }
         /* Envia pedido de adição de créditos ao banco de dados */
-        bCONN_SendUserCredit(&stConn.stMsg);
+        bCONN_SendUserCredit();
         vCONN_DescartaMensagem(&stConn);
         stConn.conectado = FALSE;
         svSwitchSuperstate(enEsperaConexao);

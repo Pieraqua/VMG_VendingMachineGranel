@@ -16,9 +16,9 @@ import java.util.*
 
 class TelaConexao : AppCompatActivity() {
     companion object TelaConexao{
-        val usuario : Usuario = Usuario(0.0F, 0)
+        var usuario : Usuario = Usuario(0, 0)
         var conectado : Boolean = false
-        var bluetoothClient = BluetoothClient(null,null,null)
+        var bluetoothClient = BluetoothClient(null,null)
     }
 
 
@@ -76,7 +76,7 @@ class TelaConexao : AppCompatActivity() {
             startActivity(intent)
         }
 
-        if(!bluetoothClient.getConnected())
+        if(!bluetoothClient.started)
             bluetoothClient.start()
 
     }
@@ -84,6 +84,8 @@ class TelaConexao : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
+        if(!bluetoothClient.started)
+            bluetoothClient.start()
     }
 
     fun resetListaCompras()

@@ -1,6 +1,6 @@
 package com.example.bluetoothexample
 
 data class Usuario(
-    var creditos: Float,
+    var creditos: Int,
     var userID: Int
 )

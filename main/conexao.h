@@ -46,7 +46,7 @@ void vCONN_FechaConexao();
 
 bool bCONN_SendAck();
 /* Envia pedido de adição de créditos ao banco de dados */
-bool bCONN_SendUserCredit(STRUCT_MSG* mensagem);
+bool bCONN_SendUserCredit();
 
 bool bCONN_SendAckRequest();
 

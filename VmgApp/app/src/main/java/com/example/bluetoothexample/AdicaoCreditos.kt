@@ -51,12 +51,13 @@ class AdicaoCreditos : AppCompatActivity() {
     private fun adicionarCreditos() {
         val codigoPromocional = findViewById<EditText>(R.id.inputCreditos).text.toString()
 
-        if(codigoPromocional == "abcde")
+        if(codigoPromocional == "ABCDE")
             TelaConexao.bluetoothClient.sendPacoteCredito(100)
-
+        else
+            TelaConexao.bluetoothClient.sendPacoteCredito(0)
     }
 
-    private fun getCreditosAtuais() : Float{
+    private fun getCreditosAtuais() : Int{
         var creditosAtuais = TelaConexao.usuario.creditos
 
         return creditosAtuais
@@ -66,7 +67,7 @@ class AdicaoCreditos : AppCompatActivity() {
     {
         val tvCreditos = findViewById<TextView>(R.id.creditosAtuais)
 
-        val texto = String.format("R$%.02f", TelaConexao.usuario.creditos)
+        val texto = String.format("R$%d.00", TelaConexao.usuario.creditos)
         tvCreditos.text = texto
     }
 }

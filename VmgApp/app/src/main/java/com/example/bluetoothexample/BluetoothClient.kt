@@ -31,7 +31,8 @@ class BluetoothClient(
     adapter: BluetoothAdapter?,
     mmSocket: BluetoothSocket?
 ) {
-    var mmBuffer: ByteArray? = ByteArray(1024) // mmBuffer store for the stream
+    var started : Boolean = false
+    var mmBuffer: ByteArray = ByteArray(1024) // mmBuffer store for the stream
     var mmSocket : BluetoothSocket? = mmSocket
     var adapter : BluetoothAdapter? = adapter
     var paired = false
@@ -88,6 +89,7 @@ class BluetoothClient(
         override fun run() {
             /* Pega um adapter */
             super.run()
+            started = true
 
             if (adapter == null)
                 return
@@ -130,7 +132,7 @@ class BluetoothClient(
                                 // The connection attempt succeeded. Perform work associated with
                                 // the connection.
                                 mmBuffer = ByteArray(1024) // mmBuffer store for the stream
-
+                                sendAck()
                             }
 
                         } catch (e: IOException) {
@@ -138,20 +140,50 @@ class BluetoothClient(
                                 mmSocket!!.close()
                                 paired = false
                                 connected = false
+                                cancel()
                             } catch (e2: IOException) {
-
+                                cancel()
                             }
                         }
                     }
                 }
-                var numBytes: Int // bytes returned from read()
-                // Keep listening to the InputStream until an exception occurs
-                // Read from the InputStream.
-                var inStream : InputStream = mmSocket!!.inputStream
-                currentPosBuffer += inStream.read(mmBuffer)
+                if(mmSocket != null) {
+                    // Keep listening to the InputStream until an exception occurs
+                    // Read from the InputStream.
+                    var inStream: InputStream = mmSocket!!.inputStream
+                    currentPosBuffer += inStream.read(mmBuffer, currentPosBuffer, 1)
 
-                //implementa leitura de pacote recebido da esp32
-                if()
+                    //implementa leitura de pacote recebido da esp32
+                    if (currentPosBuffer >= 4) {
+
+                        if (mmBuffer[currentPosBuffer - 3] == 0x12.toByte() &&
+                            mmBuffer[currentPosBuffer - 2] == 0x34.toByte() &&
+                            mmBuffer[currentPosBuffer - 1] == 0x12.toByte() &&
+                            mmBuffer[currentPosBuffer] == 0x34.toByte()
+                        ) {
+                            //Pacote novo recebido - ler novos dados
+                            currentPosBuffer = 0;
+                        }
+                        //Terminou de receber um pacote
+                        if (mmBuffer[currentPosBuffer - 3] == 0xFF.toByte() &&
+                            mmBuffer[currentPosBuffer - 2] == 0xFF.toByte() &&
+                            mmBuffer[currentPosBuffer - 1] == 0xFF.toByte() &&
+                            mmBuffer[currentPosBuffer] == 0xFF.toByte()
+                        ) {
+                            //Pacote de adicao de creditos
+                            if (mmBuffer[0] == 5.toByte()) {
+                                TelaConexao.usuario.creditos =
+                                    (mmBuffer[7] * 256 * 256 + mmBuffer[8] * 256 + mmBuffer[9])
+                            }
+
+                            currentPosBuffer = 0;
+                        }
+                    }
+                }
+                else
+                {
+                    cancel()
+                }
             }
         }
         private fun criaPacoteCredito(dinheiros : Int) : ByteArray
@@ -311,15 +343,11 @@ class BluetoothClient(
                     sent = true
                 } catch (e: IOException) {
                     Log.e(ContentValues.TAG, "Error occurred when sending data", e)
-                    mmSocket!!.close()
-                    paired = false
-                    connected = false
+                    cancel()
                 }
             }
             else
             {
-                paired = false
-                connected = false
             }
         }
 
@@ -327,6 +355,8 @@ class BluetoothClient(
         // Closes the client socket and causes the thread to finish.
         fun cancel() {
             try {
+                currentPosBuffer = 0
+                started = false
                 paired = false
                 connected = false
                 TelaConexao.conectado = false

@@ -19,7 +19,6 @@ void vCONN_Init()
 
 void vCONN_FechaConexao()
 {
-  SerialBT.disconnect();
 }
 
 /* Função que pega os pesos do pacote bluetooth e põe no vetor pesos */
@@ -99,6 +98,7 @@ void vCONN_Poll()
     //ACK
     if(stConn.stMsg.payload[0] == 3){
       Serial.println("Ack received");
+      bCONN_SendUserCredit(); 
     }
 
     //ACKREQ
@@ -119,7 +119,7 @@ void vCONN_Poll()
       stAPP.pesos[1] = hexToInt(&stConn.stMsg.payload[3], 2);
       stAPP.pesos[2] = hexToInt(&stConn.stMsg.payload[5], 2);
     }
-    if(stConn.stMsg.payload[0] == 5 && stAPP.superestado == enEsperaConexao){
+    if(stConn.stMsg.payload[0] == 1 && stAPP.superestado == enEsperaConexao){
       //Credito
       uint8_t credito = stConn.stMsg.payload[1];
       uint32_t cliente_id = hexToInt(&stConn.stMsg.payload[2], 4);
@@ -137,7 +137,6 @@ void vCONN_Poll()
   if(SerialBT.available() && stConn.msgAvailable)
   {
     //Se nao esta enviando nada, envia um ack para avisar que descartou a mensagem
-    bCONN_SendAck();    
     SerialBT.read();
   }
   
@@ -163,7 +162,7 @@ bool bCONN_SendAck()
 }
 
 /* Envia um pacote de informações de crédito e da maquina ao aplicativo */
-bool bCONN_SendUserCredit(STRUCT_MSG* mensagem)
+bool bCONN_SendUserCredit()
 {
   //OPCODE
   SerialBT.write(5);
@@ -181,9 +180,9 @@ bool bCONN_SendUserCredit(STRUCT_MSG* mensagem)
   //peso disponivel item 3
   SerialBT.write(0xfe);  
   //dinheiros disponiveis MSB
-  SerialBT.write(0xfe);  
+  SerialBT.write(0x10);  
   //dinheiros disponiveis middle byte
-  SerialBT.write(0xfe);  
+  SerialBT.write(0x01);  
   //dineheiros disponiveis LSB
   SerialBT.write(0xfe);
  
