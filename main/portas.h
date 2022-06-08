@@ -14,10 +14,10 @@ typedef enum{
 }enPorta;
 
 typedef enum{
-  portaFechada = 0,
-  portaPoucoAberta = 10,
-  portaPoucoFechada = 25,
-  portaAberta = 40
+  portaFechada = 40,
+  portaPoucoAberta = 25,
+  portaPoucoFechada = 10,
+  portaAberta = 0
 }enAberturaPorta;
 
 typedef struct{
