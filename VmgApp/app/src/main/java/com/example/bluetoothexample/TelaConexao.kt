@@ -78,6 +78,10 @@ class TelaConexao : AppCompatActivity() {
 
         if(!bluetoothClient.started)
             bluetoothClient.start()
+        else
+        {
+            bluetoothClient.sendAck()
+        }
 
     }
 
@@ -86,6 +90,10 @@ class TelaConexao : AppCompatActivity() {
 
         if(!bluetoothClient.started)
             bluetoothClient.start()
+        else
+        {
+            bluetoothClient.sendAck()
+        }
     }
 
     fun resetListaCompras()

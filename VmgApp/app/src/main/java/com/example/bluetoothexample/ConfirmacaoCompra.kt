@@ -42,7 +42,7 @@ class ConfirmacaoCompra : AppCompatActivity() {
             if(!SelecaoProdutos.modoMisto || SelecaoProdutos.modoMisto &&
                 SelecaoProdutos.listaDeProdutos[0].peso +
                 SelecaoProdutos.listaDeProdutos[1].peso +
-                SelecaoProdutos.listaDeProdutos[2].peso < 900 && TelaConexao.bluetoothClient.getConnected()
+                SelecaoProdutos.listaDeProdutos[2].peso < 900 && TelaConexao.bluetoothClient.connected
             ) {
                 /* Enviar info para a VMG e esperar o ACK */
                 TelaConexao.bluetoothClient.sendPedido()
@@ -74,12 +74,6 @@ class ConfirmacaoCompra : AppCompatActivity() {
         }
     }
 
-    fun write()
-    {
-        if(TelaConexao.bluetoothClient.mmSocket != null) {
-            TelaConexao.bluetoothClient.mmSocket!!.outputStream.write("Abobrinha".toByteArray())
-        }
-    }
 
     override fun onResume() {
         super.onResume()
@@ -107,7 +101,7 @@ class ConfirmacaoCompra : AppCompatActivity() {
                     SelecaoProdutos.listaDeProdutos[0].peso +
                     SelecaoProdutos.listaDeProdutos[1].peso +
                     SelecaoProdutos.listaDeProdutos[2].peso < 900 &&
-                TelaConexao.bluetoothClient.getConnected()
+                TelaConexao.bluetoothClient.connected
                     ) {
                 /* Enviar info para a VMG e esperar o ACK */
                 TelaConexao.bluetoothClient.sendPedido()
@@ -121,7 +115,7 @@ class ConfirmacaoCompra : AppCompatActivity() {
 
             }
             else{
-                if(TelaConexao.bluetoothClient.getConnected() == false) {
+                if(TelaConexao.bluetoothClient.connected == false) {
                     tvAvisoPeso.text = "Não conectado!"
 
                 }
@@ -134,8 +128,6 @@ class ConfirmacaoCompra : AppCompatActivity() {
 
         bCancelarCompra.setOnClickListener{
             /* Limpar todas as informações */
-            TelaConexao.bluetoothClient.cancel()
-
             /* Voltar para primeira tela */
             val intent = Intent(this@ConfirmacaoCompra, TelaConexao::class.java)
 

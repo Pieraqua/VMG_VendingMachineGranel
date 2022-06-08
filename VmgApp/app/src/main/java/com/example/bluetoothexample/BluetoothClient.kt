@@ -31,6 +31,7 @@ class BluetoothClient(
     adapter: BluetoothAdapter?,
     mmSocket: BluetoothSocket?
 ) {
+    var deviceVMG : BluetoothDevice? = null
     var started : Boolean = false
     var mmBuffer: ByteArray = ByteArray(1024) // mmBuffer store for the stream
     var mmSocket : BluetoothSocket? = mmSocket
@@ -38,6 +39,9 @@ class BluetoothClient(
     var paired = false
     var sent = false
     var currentPosBuffer : Int = 0
+    var atual = 0
+    var filaMsgs : Vector<ByteArray> = Vector(10)
+    var connected : Boolean = false
 
     fun sendPedido()
     {
@@ -61,29 +65,109 @@ class BluetoothClient(
 
     fun start()
     {
+        connectThread().start()
         bluetoothThread().start()
+        writeThread().start()
     }
 
-    fun cancel()
-    {
-        bluetoothThread().cancel()
-    }
 
     fun write(bytes : ByteArray)
     {
         bluetoothThread().write(bytes)
     }
-    fun getConnected() : Boolean
+
+    private inner class writeThread() : Thread() {
+        override fun run()
+        {
+            var writing : Boolean = false
+            while(true)
+            {
+                if(connected)
+                {
+                    if(mmSocket != null && paired && connected && started) {
+                        if (mmSocket!!.outputStream != null && connected) {
+                            try {
+                                if(atual > 0){
+                                    writing = true
+                                    mmSocket!!.outputStream.write(filaMsgs[0])
+                                    filaMsgs.removeElementAt(0)
+                                    atual--
+                                    writing = false
+                                }
+                            } catch (e: IOException) {
+                                Log.e(ContentValues.TAG, "Error occurred when sending data", e)
+                                writing = false
+                                paired = false
+                                connected = false
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private inner class connectThread() : Thread()
     {
-        return bluetoothThread().connected
+        @SuppressLint("MissingPermission")
+        override fun start() {
+            super.start()
+            /* Enquanto não estiver pareado, */
+            while (!connected) {
+                while (!paired) {
+                    val pairedDevices: Set<BluetoothDevice>? = adapter?.bondedDevices
+                    pairedDevices?.forEach { device ->
+                        val deviceName = device.name
+                        val deviceHardwareAddress = device.address // MAC address
+
+                        if (deviceName == "VMGaGranel") {
+                            paired = true
+                            deviceVMG = device
+                        }
+
+
+                        if (!paired) {
+                            sleep(500)
+                        }
+                    }
+                }
+                if(!connected && paired && deviceVMG != null) {
+                    try {
+                        mmSocket =
+                            deviceVMG!!.createInsecureRfcommSocketToServiceRecord(
+                                UUID.fromString(
+                                    "00001101-0000-1000-8000-00805F9B34FB"
+                                )
+                            )
+                        mmSocket?.let { socket ->
+                            // Connect to the remote device through the socket. This call blocks
+                            // until it succeeds or throws an exception.
+                            sleep(500)
+                            socket.connect()
+                            connected = true
+                            paired = true
+
+                            // The connection attempt succeeded. Perform work associated with
+                            // the connection.
+                            mmBuffer = ByteArray(1024) // mmBuffer store for the stream
+                            sendAck()
+                        }
+
+                    } catch (e: IOException) {
+                        try {
+                            mmSocket!!.close()
+                            paired = false
+                            connected = false
+                        } catch (e2: IOException) {
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private inner class bluetoothThread() : Thread()
     {
-
-        var connected = false
-        var deviceVMG : BluetoothDevice? = null
-
         @SuppressLint("MissingPermission")
         @RequiresApi(Build.VERSION_CODES.M)
         override fun run() {
@@ -95,64 +179,20 @@ class BluetoothClient(
                 return
 
             while(true) {
-                /* Enquanto não estiver pareado, */
-                while (!connected) {
-                    while (!paired) {
-                        val pairedDevices: Set<BluetoothDevice>? = adapter?.bondedDevices
-                        pairedDevices?.forEach { device ->
-                            val deviceName = device.name
-                            val deviceHardwareAddress = device.address // MAC address
 
-                            if (deviceName == "VMGaGranel") {
-                                paired = true
-                                deviceVMG = device
-                            }
-
-
-                            if (!paired) {
-                                sleep(500)
-                            }
-                        }
-
-                        try {
-                            mmSocket =
-                                deviceVMG!!.createInsecureRfcommSocketToServiceRecord(
-                                    UUID.fromString(
-                                        "00001101-0000-1000-8000-00805F9B34FB"
-                                    )
-                                )
-                            mmSocket?.let { socket ->
-                                // Connect to the remote device through the socket. This call blocks
-                                // until it succeeds or throws an exception.
-                                sleep(500)
-                                socket.connect()
-                                connected = true
-                                TelaConexao.conectado = true
-
-                                // The connection attempt succeeded. Perform work associated with
-                                // the connection.
-                                mmBuffer = ByteArray(1024) // mmBuffer store for the stream
-                                sendAck()
-                            }
-
-                        } catch (e: IOException) {
-                            try {
-                                mmSocket!!.close()
-                                paired = false
-                                connected = false
-                                cancel()
-                            } catch (e2: IOException) {
-                                cancel()
-                            }
-                        }
-                    }
-                }
-                if(mmSocket != null) {
+                if(mmSocket != null && connected && started && paired) {
                     // Keep listening to the InputStream until an exception occurs
                     // Read from the InputStream.
                     var inStream: InputStream = mmSocket!!.inputStream
-                    currentPosBuffer += inStream.read(mmBuffer, currentPosBuffer, 1)
-
+                    try {
+                        currentPosBuffer += inStream.read(mmBuffer, currentPosBuffer, 1)
+                    }
+                    catch (e: IOException)
+                    {
+                        currentPosBuffer = 0
+                        paired = false
+                        connected = false
+                    }
                     //implementa leitura de pacote recebido da esp32
                     if (currentPosBuffer >= 4) {
 
@@ -179,10 +219,6 @@ class BluetoothClient(
                             currentPosBuffer = 0;
                         }
                     }
-                }
-                else
-                {
-                    cancel()
                 }
             }
         }
@@ -322,7 +358,8 @@ class BluetoothClient(
 
         fun sendAck()
         {
-            write(criaAck())
+            if(connected)
+                write(criaAck())
         }
 
         fun sendPacoteCredito(dinheiros: Int)
@@ -334,36 +371,14 @@ class BluetoothClient(
         {
             write(criaAckRequest())
         }
-
+        //semaforo
+        var writing : Boolean = false
         fun write(bytes: ByteArray)
         {
-            if(mmSocket != null && mmSocket!!.outputStream != null) {
-                try {
-                    mmSocket!!.outputStream.write(bytes)
-                    sent = true
-                } catch (e: IOException) {
-                    Log.e(ContentValues.TAG, "Error occurred when sending data", e)
-                    cancel()
-                }
-            }
-            else
-            {
-            }
-        }
-
-
-        // Closes the client socket and causes the thread to finish.
-        fun cancel() {
-            try {
-                currentPosBuffer = 0
-                started = false
-                paired = false
-                connected = false
-                TelaConexao.conectado = false
-                mmSocket?.close()
-            } catch (e: IOException) {
-                Log.e(TAG, "Could not close the client socket", e)
-            }
+            filaMsgs.add(bytes)
+            atual++
+            if(!started)
+                start()
         }
     }
 }
