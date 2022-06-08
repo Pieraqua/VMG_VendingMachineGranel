@@ -1,9 +1,9 @@
 #ifndef __MOTORES_VIBRA_H
 #define __MOTORES_VIBRA_H
 
-#define MOTOR1 1
-#define MOTOR2 19
-#define MOTOR3 16
+#define MOTOR1 23
+#define MOTOR2 22
+#define MOTOR3 21
 
 typedef enum{
   enMotor1 = 0,

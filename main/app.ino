@@ -8,7 +8,6 @@ void vAPP_Init()
   stAPP.ultimo_estado = enEsperaConexao;
   stAPP.erro = enErroNenhum;
   stAPP.recebeuPesos = false;
-  vPORTA_Init();
   
 }
 
