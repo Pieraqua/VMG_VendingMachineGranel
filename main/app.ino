@@ -1,17 +1,14 @@
 #include "app.h"
 
-STRUCT_APP stAPP = 
-{
-  .superestado = enEsperaConexao,
-  .ultimo_estado = enEsperaConexao,
-  .erro = enErroNenhum,
-  .recebeuPesos = false
-};
+STRUCT_APP stAPP;
 
 void vAPP_Init()
 {
   memset(stAPP.pesos, 0, sizeof(uint16_t)*3);
-  
+  stAPP.superestado = enEsperaConexao;
+  stAPP.ultimo_estado = enEsperaConexao;
+  stAPP.erro = enErroNenhum;
+  stAPP.recebeuPesos = false;
 }
 
 void vAPP_Poll()
