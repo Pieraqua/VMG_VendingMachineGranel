@@ -3,18 +3,7 @@
     This creates one empty database, populates values, and retrieves them back
     from the SPIFFS file 
 */
-#include <stdio.h>
-#include <stdlib.h>
-#include "sqlite3.h"
-#include <SPI.h>
-
-#include <FS.h>
-#include "SPIFFS.h"
-
-/* You only need to format SPIFFS the first time you run a
-   test or else use the SPIFFS plugin to create a partition
-   https://github.com/me-no-dev/arduino-esp32fs-plugin */
-#define FORMAT_SPIFFS_IF_FAILED true
+#include "sqlite_spiffs.h"
 
 const char* data = "Callback function called";
 static int callback(void *data, int argc, char **argv, char **azColName) {

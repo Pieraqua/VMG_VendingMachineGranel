@@ -7,6 +7,7 @@
 #include "gendefs.h"
 #include "portas.h"
 #include "proximidade.h"
+#include "sqlite_spiffs.h"
 
 /* Defines */
 #define MARGEM_BAIXA  0.75
