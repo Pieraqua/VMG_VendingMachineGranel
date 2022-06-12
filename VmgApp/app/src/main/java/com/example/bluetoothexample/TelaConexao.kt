@@ -64,16 +64,32 @@ class TelaConexao : AppCompatActivity() {
         }
         val buttonConfirmarConexao:Button = findViewById(R.id.confirmConnect)
         buttonConfirmarConexao.setOnClickListener{
-            val intent = Intent(this@TelaConexao, SelecaoProdutos::class.java)
-            resetListaCompras()
+            if(TelaConexao.conectado) {
+                val intent = Intent(this@TelaConexao, SelecaoProdutos::class.java)
+                resetListaCompras()
 
-            startActivity(intent)
+                startActivity(intent)
+            }
+            else
+            {
+                //Mensagem de erro
+                val tvListMachines : TextView = findViewById(R.id.listConexoes)
+                tvListMachines.text = "Ainda não conectou!"
+            }
         }
 
         val buttonAdicaoCreditos = findViewById<Button>(R.id.botaoAdicionarCreditos)
         buttonAdicaoCreditos.setOnClickListener{
-            val intent = Intent(this@TelaConexao, AdicaoCreditos::class.java)
-            startActivity(intent)
+            if(TelaConexao.conectado) {
+                val intent = Intent(this@TelaConexao, AdicaoCreditos::class.java)
+                startActivity(intent)
+            }
+            else
+            {
+                //Mensagem de erro
+                val tvListMachines : TextView = findViewById(R.id.listConexoes)
+                tvListMachines.text = "Ainda não conectou!"
+            }
         }
 
         if(!bluetoothClient.started)

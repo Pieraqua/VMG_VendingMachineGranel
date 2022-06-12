@@ -10,7 +10,7 @@ import android.widget.TextView
 class SelecaoProdutos : AppCompatActivity() {
     companion object ListaProdutos{
         val listaDeProdutos: Array<Produto> =
-            Array(3) { Produto(nome = "", peso = 0, escolhido = false) }
+            Array(3) { Produto(nome = "", peso = 100, escolhido = false) }
         var modoMisto : Boolean = false
     }
 
@@ -60,11 +60,11 @@ class SelecaoProdutos : AppCompatActivity() {
 
     fun resetListaCompras()
     {
-        SelecaoProdutos.listaDeProdutos[0].peso = 0
+        SelecaoProdutos.listaDeProdutos[0].peso = 100
 
-        SelecaoProdutos.listaDeProdutos[1].peso = 0
+        SelecaoProdutos.listaDeProdutos[1].peso = 100
 
-        SelecaoProdutos.listaDeProdutos[2].peso = 0
+        SelecaoProdutos.listaDeProdutos[2].peso = 100
 
     }
 

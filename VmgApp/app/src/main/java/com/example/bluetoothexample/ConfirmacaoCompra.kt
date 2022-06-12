@@ -42,7 +42,7 @@ class ConfirmacaoCompra : AppCompatActivity() {
             if(!SelecaoProdutos.modoMisto || SelecaoProdutos.modoMisto &&
                 SelecaoProdutos.listaDeProdutos[0].peso +
                 SelecaoProdutos.listaDeProdutos[1].peso +
-                SelecaoProdutos.listaDeProdutos[2].peso < 900 && TelaConexao.bluetoothClient.connected
+                SelecaoProdutos.listaDeProdutos[2].peso < 900 && TelaConexao.conectado
             ) {
                 /* Enviar info para a VMG e esperar o ACK */
                 TelaConexao.bluetoothClient.sendPedido()
@@ -101,7 +101,7 @@ class ConfirmacaoCompra : AppCompatActivity() {
                     SelecaoProdutos.listaDeProdutos[0].peso +
                     SelecaoProdutos.listaDeProdutos[1].peso +
                     SelecaoProdutos.listaDeProdutos[2].peso < 900 &&
-                TelaConexao.bluetoothClient.connected
+                TelaConexao.conectado
                     ) {
                 /* Enviar info para a VMG e esperar o ACK */
                 TelaConexao.bluetoothClient.sendPedido()
@@ -115,7 +115,7 @@ class ConfirmacaoCompra : AppCompatActivity() {
 
             }
             else{
-                if(TelaConexao.bluetoothClient.connected == false) {
+                if(TelaConexao.conectado == false) {
                     tvAvisoPeso.text = "Não conectado!"
 
                 }

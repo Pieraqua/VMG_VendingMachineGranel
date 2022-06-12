@@ -55,10 +55,10 @@ void vCONN_Poll()
   //Recebe mensagem
   while (SerialBT.available() && !stConn.msgAvailable) {
     char msg = (char)SerialBT.read();
-    Serial.println("Byte recebido");
-    Serial.println((byte)msg);
-    Serial.print("Current: ");
-    Serial.println(stConn.stMsg.current);
+    //Serial.println("Byte recebido");
+    //Serial.println((byte)msg);
+    //Serial.print("Current: ");
+    //Serial.println(stConn.stMsg.current);
     
 
     if(!stConn.msgAvailable){
@@ -78,6 +78,7 @@ void vCONN_Poll()
           stConn.receivingMsg = 0;
         }
       }
+      /*
       if(current >= 4){
         Serial.print(stConn.stMsg.payload[current-4]);Serial.print(stConn.stMsg.payload[current-3]);Serial.print(stConn.stMsg.payload[current-2]);Serial.print(stConn.stMsg.payload[current-1]);
         Serial.println("");
@@ -88,7 +89,7 @@ void vCONN_Poll()
         Serial.print(stConn.stMsg.payload[i]);
       }
       Serial.println(".");
-      
+      */
     }
   }
 
@@ -142,9 +143,27 @@ void vCONN_Poll()
   
 }
 
+static void vCONN_StartPacket()
+{
+  SerialBT.write(0x12);
+  SerialBT.write(0x34);
+  SerialBT.write(0x12);
+  SerialBT.write(0x34);
+}
+
+static void vCONN_EndPacket()
+{
+    SerialBT.write(0xFF);
+  SerialBT.write(0xFF);
+    SerialBT.write(0xFF);
+  SerialBT.write(0xFF);
+}
+
 /* Envia um pacote de ACK para o aplicativo */
 bool bCONN_SendAck()
 {
+  vCONN_StartPacket();
+  
   //OPCODE
   SerialBT.write(3);
   //Payload
@@ -157,6 +176,8 @@ bool bCONN_SendAck()
   //Packet ender
   SerialBT.write(0xFF);
   SerialBT.write(0xFF);
+
+  vCONN_EndPacket();
   
   return true;
 }
@@ -164,6 +185,7 @@ bool bCONN_SendAck()
 /* Envia um pacote de informações de crédito e da maquina ao aplicativo */
 bool bCONN_SendUserCredit()
 {
+  vCONN_StartPacket();
   //OPCODE
   SerialBT.write(5);
  
@@ -180,18 +202,17 @@ bool bCONN_SendUserCredit()
   //peso disponivel item 3
   SerialBT.write(0xfe);  
   //dinheiros disponiveis MSB
-  SerialBT.write(0x10);  
+  SerialBT.write(0x00);  
   //dinheiros disponiveis middle byte
-  SerialBT.write(0x01);  
+  SerialBT.write(0x00);  
   //dineheiros disponiveis LSB
-  SerialBT.write(0xfe);
+  SerialBT.write(0x1E);
  
   //checksum
   SerialBT.write((uint8_t)((0xff * 9 + 5)%256));
 
   //packet ender
-  SerialBT.write(0xff);
-  SerialBT.write(0xff);
+  vCONN_EndPacket();
 
   return true;
 }
@@ -199,6 +220,7 @@ bool bCONN_SendUserCredit()
 /* Envia um pacote de requisição de ACK ao aplicativo */
 bool bCONN_SendAckRequest()
 {
+  vCONN_StartPacket();
   //OPCODE
   SerialBT.write(4);
   //Payload
@@ -210,8 +232,7 @@ bool bCONN_SendAckRequest()
   SerialBT.write((4 + 0x12 + 0x34 + 0x56 + 0x78)%256);
 
   //Packet ender
-  SerialBT.write(0xFF);
-  SerialBT.write(0xFF);
+  vCONN_EndPacket();
   
   return false;
 }

@@ -31,6 +31,7 @@ class BluetoothClient(
     adapter: BluetoothAdapter?,
     mmSocket: BluetoothSocket?
 ) {
+    val taglog = "VMGBluetoothClient"
     var deviceVMG : BluetoothDevice? = null
     var started : Boolean = false
     var mmBuffer: ByteArray = ByteArray(1024) // mmBuffer store for the stream
@@ -41,7 +42,6 @@ class BluetoothClient(
     var currentPosBuffer : Int = 0
     var atual = 0
     var filaMsgs : Vector<ByteArray> = Vector(10)
-    var connected : Boolean = false
 
     fun sendPedido()
     {
@@ -82,12 +82,12 @@ class BluetoothClient(
             var writing : Boolean = false
             while(true)
             {
-                if(connected)
+                if(TelaConexao.conectado)
                 {
-                    if(mmSocket != null && paired && connected && started) {
-                        if (mmSocket!!.outputStream != null && connected) {
+                    if(mmSocket != null && paired && TelaConexao.conectado && started) {
+                        if (mmSocket!!.outputStream != null && TelaConexao.conectado) {
                             try {
-                                if(atual > 0){
+                                if(filaMsgs.size >= 1){
                                     writing = true
                                     mmSocket!!.outputStream.write(filaMsgs[0])
                                     filaMsgs.removeElementAt(0)
@@ -98,7 +98,7 @@ class BluetoothClient(
                                 Log.e(ContentValues.TAG, "Error occurred when sending data", e)
                                 writing = false
                                 paired = false
-                                connected = false
+                                TelaConexao.conectado = false
                             }
                         }
                     }
@@ -110,10 +110,10 @@ class BluetoothClient(
     private inner class connectThread() : Thread()
     {
         @SuppressLint("MissingPermission")
-        override fun start() {
-            super.start()
+        override fun run() {
+            super.run()
             /* Enquanto não estiver pareado, */
-            while (!connected) {
+            while (!TelaConexao.conectado) {
                 while (!paired) {
                     val pairedDevices: Set<BluetoothDevice>? = adapter?.bondedDevices
                     pairedDevices?.forEach { device ->
@@ -131,7 +131,7 @@ class BluetoothClient(
                         }
                     }
                 }
-                if(!connected && paired && deviceVMG != null) {
+                if(!TelaConexao.conectado && paired && deviceVMG != null) {
                     try {
                         mmSocket =
                             deviceVMG!!.createInsecureRfcommSocketToServiceRecord(
@@ -144,7 +144,7 @@ class BluetoothClient(
                             // until it succeeds or throws an exception.
                             sleep(500)
                             socket.connect()
-                            connected = true
+                            TelaConexao.conectado = true
                             paired = true
 
                             // The connection attempt succeeded. Perform work associated with
@@ -157,7 +157,7 @@ class BluetoothClient(
                         try {
                             mmSocket!!.close()
                             paired = false
-                            connected = false
+                            TelaConexao.conectado = false
                         } catch (e2: IOException) {
                         }
                     }
@@ -165,6 +165,7 @@ class BluetoothClient(
             }
         }
     }
+    fun ByteArray.toHex(): String = joinToString(separator = "") { eachByte -> "%02x".format(eachByte) }
 
     private inner class bluetoothThread() : Thread()
     {
@@ -180,38 +181,43 @@ class BluetoothClient(
 
             while(true) {
 
-                if(mmSocket != null && connected && started && paired) {
+                if(mmSocket != null && TelaConexao.conectado && started && paired) {
                     // Keep listening to the InputStream until an exception occurs
                     // Read from the InputStream.
                     var inStream: InputStream = mmSocket!!.inputStream
                     try {
                         currentPosBuffer += inStream.read(mmBuffer, currentPosBuffer, 1)
+
                     }
                     catch (e: IOException)
                     {
                         currentPosBuffer = 0
                         paired = false
-                        connected = false
+                        TelaConexao.conectado = false
                     }
                     //implementa leitura de pacote recebido da esp32
                     if (currentPosBuffer >= 4) {
-
-                        if (mmBuffer[currentPosBuffer - 3] == 0x12.toByte() &&
-                            mmBuffer[currentPosBuffer - 2] == 0x34.toByte() &&
-                            mmBuffer[currentPosBuffer - 1] == 0x12.toByte() &&
-                            mmBuffer[currentPosBuffer] == 0x34.toByte()
+                        Log.d(taglog, "%02x".format(mmBuffer[currentPosBuffer-4]))
+                        Log.d(taglog, "%02x".format(mmBuffer[currentPosBuffer-3]))
+                        Log.d(taglog, "%02x".format(mmBuffer[currentPosBuffer-2]))
+                        Log.d(taglog, "%02x".format(mmBuffer[currentPosBuffer-1]))
+                        if (mmBuffer[currentPosBuffer - 4] == 0x12.toByte() &&
+                            mmBuffer[currentPosBuffer - 3] == 0x34.toByte() &&
+                            mmBuffer[currentPosBuffer - 2] == 0x12.toByte() &&
+                            mmBuffer[currentPosBuffer - 1] == 0x34.toByte()
                         ) {
                             //Pacote novo recebido - ler novos dados
                             currentPosBuffer = 0;
                         }
                         //Terminou de receber um pacote
-                        if (mmBuffer[currentPosBuffer - 3] == 0xFF.toByte() &&
+                        else if (mmBuffer[currentPosBuffer - 4] == 0xFF.toByte() &&
+                            mmBuffer[currentPosBuffer - 3] == 0xFF.toByte() &&
                             mmBuffer[currentPosBuffer - 2] == 0xFF.toByte() &&
-                            mmBuffer[currentPosBuffer - 1] == 0xFF.toByte() &&
-                            mmBuffer[currentPosBuffer] == 0xFF.toByte()
+                            mmBuffer[currentPosBuffer - 1] == 0xFF.toByte()
                         ) {
                             //Pacote de adicao de creditos
                             if (mmBuffer[0] == 5.toByte()) {
+                                Log.d(taglog, "Pacote de adição de créditos recebido")
                                 TelaConexao.usuario.creditos =
                                     (mmBuffer[7] * 256 * 256 + mmBuffer[8] * 256 + mmBuffer[9])
                             }
@@ -358,7 +364,7 @@ class BluetoothClient(
 
         fun sendAck()
         {
-            if(connected)
+            if(TelaConexao.conectado)
                 write(criaAck())
         }
 
