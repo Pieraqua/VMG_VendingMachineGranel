@@ -218,8 +218,21 @@ class BluetoothClient(
                             //Pacote de adicao de creditos
                             if (mmBuffer[0] == 5.toByte()) {
                                 Log.d(taglog, "Pacote de adição de créditos recebido")
+                                /* Créditos do usuário */
                                 TelaConexao.usuario.creditos =
                                     (mmBuffer[7] * 256 * 256 + mmBuffer[8] * 256 + mmBuffer[9])
+                                /* Peso disponível na máquina */
+                                /* Produto1 */
+                                SelecaoProdutos.listaDeProdutos[0].pesoDisponivel=((mmBuffer[1].toUByte()*256u + mmBuffer[2].toUByte()).toInt())
+                                /* Produto2 */
+                                SelecaoProdutos.listaDeProdutos[1].pesoDisponivel=((mmBuffer[3].toUByte()*256u + mmBuffer[4].toUByte()).toInt())
+                                /* Produto3 */
+                                SelecaoProdutos.listaDeProdutos[2].pesoDisponivel=((mmBuffer[5].toUByte()*256u + mmBuffer[6].toUByte()).toInt())
+                                Log.d(taglog, "Créditos usuário: %d\n".format(TelaConexao.usuario.creditos) +
+                                        "Peso disponível produto 1: %d\n".format(SelecaoProdutos.listaDeProdutos[0].pesoDisponivel) +
+                                        "Peso disponível produto 2: %d\n".format(SelecaoProdutos.listaDeProdutos[1].pesoDisponivel) +
+                                        "Peso disponível produto 3: %d\n".format(SelecaoProdutos.listaDeProdutos[2].pesoDisponivel)
+                                )
                             }
 
                             currentPosBuffer = 0;
@@ -265,7 +278,7 @@ class BluetoothClient(
         private fun criaPacotePedido() :ByteArray
         {
             var pacote = ByteArray(16)
-            var peso = 0
+            var peso : Int
             var checksum = 2
 
             pacote[0] = 0x12.toByte()
@@ -276,8 +289,13 @@ class BluetoothClient(
             pacote[4] = 0x02
             var i = 5
 
+            var escolhido = 0
             for(x in 0..2) {
-                peso = SelecaoProdutos.listaDeProdutos[x].peso
+                if(SelecaoProdutos.listaDeProdutos[x].escolhido)
+                    escolhido = 1
+                else
+                    escolhido = 0
+                peso = SelecaoProdutos.listaDeProdutos[x].peso*escolhido
                 pacote[i++] = (peso / 256).toByte()
                 pacote[i++] = (peso).toByte()
                 checksum += peso

@@ -4,5 +4,6 @@ data class Produto(
     var peso: Int,
     var nome: String,
     var custo : Int,
-    var escolhido: Boolean
+    var escolhido: Boolean,
+    var pesoDisponivel : Int
 )

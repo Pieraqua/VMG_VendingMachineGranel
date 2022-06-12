@@ -116,12 +116,15 @@ class TelaConexao : AppCompatActivity() {
     {
         SelecaoProdutos.listaDeProdutos[0].peso = 0
         SelecaoProdutos.listaDeProdutos[0].escolhido = false
+        SelecaoProdutos.listaDeProdutos[0].custo = 30
 
         SelecaoProdutos.listaDeProdutos[1].peso = 0
         SelecaoProdutos.listaDeProdutos[1].escolhido = false
+        SelecaoProdutos.listaDeProdutos[1].custo = 60
 
         SelecaoProdutos.listaDeProdutos[2].peso = 0
         SelecaoProdutos.listaDeProdutos[2].escolhido = false
+        SelecaoProdutos.listaDeProdutos[2].custo = 90
 
     }
 

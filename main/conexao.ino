@@ -190,17 +190,17 @@ bool bCONN_SendUserCredit()
   SerialBT.write(5);
  
   //peso disponivel item 1
-  SerialBT.write(0xfe);
+  SerialBT.write(0x01);
   //peso disponivel item 1
-  SerialBT.write(0xfe);
+  SerialBT.write(0x2c);
   //peso disponivel item 2
-  SerialBT.write(0xfe);
+  SerialBT.write(0x02);
   //peso disponivel item 2
-  SerialBT.write(0xfe);  
+  SerialBT.write(0x58);  
   //peso disponivel item 3
-  SerialBT.write(0xfe);  
+  SerialBT.write(0x03);  
   //peso disponivel item 3
-  SerialBT.write(0xfe);  
+  SerialBT.write(0x84);  
   //dinheiros disponiveis MSB
   SerialBT.write(0x00);  
   //dinheiros disponiveis middle byte

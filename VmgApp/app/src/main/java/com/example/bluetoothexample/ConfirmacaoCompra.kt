@@ -91,13 +91,62 @@ class ConfirmacaoCompra : AppCompatActivity() {
         configText()
         configButtons()
 
-        tvAmendoimConfirmacao.text = getString(R.string.valorTotalAmendoim).format(SelecaoProdutos.listaDeProdutos[0].peso)
-        tvCastanhaCajuConfirmacao.text = getString(R.string.valorTotalCastanhaCaju).format(SelecaoProdutos.listaDeProdutos[1].peso)
-        tvCastanhaParaConfirmacao.text = getString(R.string.valorTotalCastanhaPara).format(SelecaoProdutos.listaDeProdutos[2].peso)
+        var escolhido1 = 0
+        var escolhido2 = 0
+        var escolhido3 = 0
+
+        if(SelecaoProdutos.listaDeProdutos[0].escolhido)
+            escolhido1 = 1
+        if(SelecaoProdutos.listaDeProdutos[1].escolhido)
+            escolhido2 = 1
+        if(SelecaoProdutos.listaDeProdutos[2].escolhido)
+            escolhido3 = 1
+
+        tvAmendoimConfirmacao.text = getString(R.string.valorTotalAmendoim).format(SelecaoProdutos.listaDeProdutos[0].peso * escolhido1)
+        tvCastanhaCajuConfirmacao.text = getString(R.string.valorTotalCastanhaCaju).format(SelecaoProdutos.listaDeProdutos[1].peso * escolhido2)
+        tvCastanhaParaConfirmacao.text = getString(R.string.valorTotalCastanhaPara).format(SelecaoProdutos.listaDeProdutos[2].peso * escolhido3)
 
         bConfirmarCompra.setOnClickListener{
+            if(SelecaoProdutos.listaDeProdutos[0].peso * escolhido1
+                > SelecaoProdutos.listaDeProdutos[0].pesoDisponivel ||
+                SelecaoProdutos.listaDeProdutos[1].peso  * escolhido2
+                > SelecaoProdutos.listaDeProdutos[1].pesoDisponivel ||
+                SelecaoProdutos.listaDeProdutos[2].peso  * escolhido3
+                > SelecaoProdutos.listaDeProdutos[2].pesoDisponivel)
+            {
+                if(SelecaoProdutos.listaDeProdutos[0].peso  * escolhido1
+                    > SelecaoProdutos.listaDeProdutos[0].pesoDisponivel)
+                {
+                    tvAvisoPeso.text = "Produto indisponível: Amendoim\n" +
+                            "Peso disponível: %d".format(SelecaoProdutos.listaDeProdutos[0].pesoDisponivel)
+                }
+                if(SelecaoProdutos.listaDeProdutos[1].peso  * escolhido1
+                    > SelecaoProdutos.listaDeProdutos[1].pesoDisponivel)
+                {
+                    tvAvisoPeso.text = "Produto indisponível: Castanha do Pará\n" +
+                            "Peso disponível: %d".format(SelecaoProdutos.listaDeProdutos[1].pesoDisponivel)
+                }
+                if(SelecaoProdutos.listaDeProdutos[2].peso  * escolhido1
+                    > SelecaoProdutos.listaDeProdutos[2].pesoDisponivel)
+                {
+                    tvAvisoPeso.text = "Produto indisponível: Castanha de Caju\n" +
+                            "Peso disponível: %d".format(SelecaoProdutos.listaDeProdutos[2].pesoDisponivel)
+                }
+            }
+            /* Dinheiro suficiente? */
+            else if(SelecaoProdutos.listaDeProdutos[0].peso
+                * SelecaoProdutos.listaDeProdutos[0].custo / 1000 * escolhido1 +
+                SelecaoProdutos.listaDeProdutos[1].peso
+                * SelecaoProdutos.listaDeProdutos[1].custo / 1000 * escolhido2 +
+                SelecaoProdutos.listaDeProdutos[2].peso
+                * SelecaoProdutos.listaDeProdutos[2].custo / 1000 * escolhido3
+                > TelaConexao.usuario.creditos)
+            {
+                tvAvisoPeso.text = "Dinheiro insuficiente!"
 
-            if(!SelecaoProdutos.modoMisto || SelecaoProdutos.modoMisto &&
+            }
+            /* Caso os pesos sejam menores que 900g */
+            else if(!SelecaoProdutos.modoMisto || SelecaoProdutos.modoMisto &&
                     SelecaoProdutos.listaDeProdutos[0].peso +
                     SelecaoProdutos.listaDeProdutos[1].peso +
                     SelecaoProdutos.listaDeProdutos[2].peso < 900 &&
@@ -106,7 +155,13 @@ class ConfirmacaoCompra : AppCompatActivity() {
                 /* Enviar info para a VMG e esperar o ACK */
                 TelaConexao.bluetoothClient.sendPedido()
 
-                /* Tela de "Processo em andamento"? */
+                /* Retira créditos do usuário */
+                TelaConexao.usuario.creditos -= (SelecaoProdutos.listaDeProdutos[0].peso
+                * SelecaoProdutos.listaDeProdutos[0].custo / 1000 +
+                        SelecaoProdutos.listaDeProdutos[1].peso
+                * SelecaoProdutos.listaDeProdutos[1].custo / 1000 +
+                        SelecaoProdutos.listaDeProdutos[2].peso
+                * SelecaoProdutos.listaDeProdutos[2].custo / 1000)
 
                 /* Voltar para primeira tela */
                     val intent = Intent(this@ConfirmacaoCompra, TelaConexao::class.java)

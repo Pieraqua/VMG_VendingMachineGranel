@@ -10,7 +10,7 @@ import android.widget.TextView
 class SelecaoProdutos : AppCompatActivity() {
     companion object ListaProdutos{
         val listaDeProdutos: Array<Produto> =
-            Array(3) { Produto(nome = "", peso = 100, escolhido = false) }
+            Array(3) { Produto(nome = "", peso = 100, escolhido = false, custo = 0, pesoDisponivel = 0) }
         var modoMisto : Boolean = false
     }
 
@@ -81,6 +81,9 @@ class SelecaoProdutos : AppCompatActivity() {
         listaDeProdutos[0].nome = "Amendoim"
         listaDeProdutos[1].nome = "Castanha de Caju"
         listaDeProdutos[2].nome = "Castanha do Pará"
+        listaDeProdutos[0].custo = 30
+        listaDeProdutos[1].custo = 60
+        listaDeProdutos[2].custo = 90
 
         if(listaDeProdutos[0].escolhido)
         {

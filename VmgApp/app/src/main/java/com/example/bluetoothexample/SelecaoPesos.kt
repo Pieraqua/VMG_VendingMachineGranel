@@ -38,16 +38,21 @@ class SelecaoPesos : AppCompatActivity() {
             }
         }
 
-        tvPesoAtual.setText(String.format("%d g",
-            SelecaoProdutos.listaDeProdutos[produtoAtual].peso))
+        tvPesoAtual.setText(String.format("%d g - R$%d",
+        SelecaoProdutos.listaDeProdutos[produtoAtual].peso,
+        SelecaoProdutos.listaDeProdutos[produtoAtual].custo *
+                SelecaoProdutos.listaDeProdutos[produtoAtual].peso / 1000 ))
+
         tvItemAtual.text = SelecaoProdutos.listaDeProdutos[produtoAtual].nome
 
         botaoMais50.setOnClickListener{
             if(SelecaoProdutos.listaDeProdutos[produtoAtual].peso + 50 <= 500)
                 SelecaoProdutos.listaDeProdutos[produtoAtual].peso += 50
 
-            val stringAtual: String = String.format("%d g", SelecaoProdutos.listaDeProdutos[produtoAtual].peso)
-
+            val stringAtual: String = String.format("%d g - R$%d",
+                SelecaoProdutos.listaDeProdutos[produtoAtual].peso,
+                SelecaoProdutos.listaDeProdutos[produtoAtual].custo *
+                        SelecaoProdutos.listaDeProdutos[produtoAtual].peso / 1000 )
             tvPesoAtual.setText(stringAtual)
 
         }
@@ -56,8 +61,10 @@ class SelecaoPesos : AppCompatActivity() {
             if(SelecaoProdutos.listaDeProdutos[produtoAtual].peso - 50 >= 100)
                 SelecaoProdutos.listaDeProdutos[produtoAtual].peso -= 50
 
-            val stringAtual: String = String.format("%d g", SelecaoProdutos.listaDeProdutos[produtoAtual].peso)
-
+            val stringAtual: String = String.format("%d g - R$%d",
+                SelecaoProdutos.listaDeProdutos[produtoAtual].peso,
+                SelecaoProdutos.listaDeProdutos[produtoAtual].custo *
+                        SelecaoProdutos.listaDeProdutos[produtoAtual].peso / 1000 )
             tvPesoAtual.setText(stringAtual)
 
         }
@@ -76,7 +83,10 @@ class SelecaoPesos : AppCompatActivity() {
             } while(!SelecaoProdutos.listaDeProdutos[produtoAtual].escolhido)
 
             if(produtoAtual < 3 && SelecaoProdutos.listaDeProdutos[produtoAtual].escolhido){
-                val stringAtual: String = String.format("%d g", SelecaoProdutos.listaDeProdutos[produtoAtual].peso)
+                val stringAtual: String = String.format("%d g - R$%d",
+                    SelecaoProdutos.listaDeProdutos[produtoAtual].peso,
+                    SelecaoProdutos.listaDeProdutos[produtoAtual].custo *
+                            SelecaoProdutos.listaDeProdutos[produtoAtual].peso / 1000 )
 
                 tvItemAtual.text = SelecaoProdutos.listaDeProdutos[produtoAtual].nome
                 tvPesoAtual.setText(stringAtual)
@@ -121,26 +131,32 @@ class SelecaoPesos : AppCompatActivity() {
             }
         }
 
-        tvPesoAtual.setText(String.format("%d g",
-            SelecaoProdutos.listaDeProdutos[produtoAtual].peso))
+        tvPesoAtual.setText(String.format("%d g - R$%d",
+            SelecaoProdutos.listaDeProdutos[produtoAtual].peso,
+            SelecaoProdutos.listaDeProdutos[produtoAtual].custo *
+                    SelecaoProdutos.listaDeProdutos[produtoAtual].peso / 1000 ))
         tvItemAtual.text = SelecaoProdutos.listaDeProdutos[produtoAtual].nome
 
         botaoMais50.setOnClickListener{
-            if(SelecaoProdutos.listaDeProdutos[produtoAtual].peso + 50 <= 2000)
+            if(SelecaoProdutos.listaDeProdutos[produtoAtual].peso + 50 <= 500)
                 SelecaoProdutos.listaDeProdutos[produtoAtual].peso += 50
 
-            val stringAtual: String = String.format("%d g", SelecaoProdutos.listaDeProdutos[produtoAtual].peso)
-
+            val stringAtual: String = String.format("%d g - R$%d",
+                SelecaoProdutos.listaDeProdutos[produtoAtual].peso,
+                SelecaoProdutos.listaDeProdutos[produtoAtual].custo *
+                        SelecaoProdutos.listaDeProdutos[produtoAtual].peso / 1000 )
             tvPesoAtual.setText(stringAtual)
 
         }
 
         botaoMenos50.setOnClickListener{
-            if(SelecaoProdutos.listaDeProdutos[produtoAtual].peso - 50 >= 0)
+            if(SelecaoProdutos.listaDeProdutos[produtoAtual].peso - 50 >= 100)
                 SelecaoProdutos.listaDeProdutos[produtoAtual].peso -= 50
 
-            val stringAtual: String = String.format("%d g", SelecaoProdutos.listaDeProdutos[produtoAtual].peso)
-
+            val stringAtual: String = String.format("%d g - R$%d",
+                SelecaoProdutos.listaDeProdutos[produtoAtual].peso,
+                SelecaoProdutos.listaDeProdutos[produtoAtual].custo *
+                        SelecaoProdutos.listaDeProdutos[produtoAtual].peso / 1000 )
             tvPesoAtual.setText(stringAtual)
 
         }
@@ -159,8 +175,10 @@ class SelecaoPesos : AppCompatActivity() {
             } while(!SelecaoProdutos.listaDeProdutos[produtoAtual].escolhido)
 
             if(produtoAtual < 3 && SelecaoProdutos.listaDeProdutos[produtoAtual].escolhido){
-                val stringAtual: String = String.format("%d g", SelecaoProdutos.listaDeProdutos[produtoAtual].peso)
-
+                val stringAtual: String = String.format("%d g - R$%d",
+                    SelecaoProdutos.listaDeProdutos[produtoAtual].peso,
+                    SelecaoProdutos.listaDeProdutos[produtoAtual].custo *
+                            SelecaoProdutos.listaDeProdutos[produtoAtual].peso / 1000 )
                 tvItemAtual.text = SelecaoProdutos.listaDeProdutos[produtoAtual].nome
                 tvPesoAtual.setText(stringAtual)
             }
